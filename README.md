@@ -1,6 +1,6 @@
 # cs207-FinalProject
 
-Group No. 12
+## Group No. 12
 
 
 Paulina Toro Isaza
