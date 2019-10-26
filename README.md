@@ -2,14 +2,15 @@
 
 ## Group No. 12
 
+- 
+  Paulina Toro Isaza
 
-Paulina Toro Isaza
+- Yaowei Li
 
-Yaowei Li
+- Nikhil Vanderklaauw
 
-Nikhil Vanderklaauw
+- Emma Li
 
-Emma Li
 
 [![Build Status](https://travis-ci.org/PYNE-AD/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/PYNE-AD/cs207-FinalProject)
 
