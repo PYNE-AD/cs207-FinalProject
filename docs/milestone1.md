@@ -22,7 +22,7 @@ Automatic differentiation teaches the computer how to calculate derivatives on i
 
 This breakdown is made possible by the Chain Rule, where F(x) is a composition of two or more functions.
 
-![Composition Equation](https://latex.codecogs.com/gif.latex?F%28X%29%3Df%28g%28x%29%29)
+![Composition Equation](https://latex.codecogs.com/gif.latex?F%28x%29%20%3D%20f%28g%28x%29%29)
 
 ![Derivative of Composition](https://latex.codecogs.com/gif.latex?F%27%28x%29%20%3D%20f%27%28g%28x%29%29g%27%28x%29)
 
