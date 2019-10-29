@@ -21,22 +21,19 @@ Automatic differentiation teaches the computer how to calculate derivatives on i
 ### Chain Rule
 
 This breakdown is made possible by the Chain Rule, where F(x) is a composition of two or more functions.
-$$
-F(x) = f(g(x))
-$$
 
-$$
-F'(x) = f'(g(x))g'(x)
-$$
+![Composition Equation](https://latex.codecogs.com/gif.latex?F%28X%29%3Df%28g%28x%29%29)
+
+![Derivative of Composition](https://latex.codecogs.com/gif.latex?F%27%28x%29%20%3D%20f%27%28g%28x%29%29g%27%28x%29)
 
 In automatic differentiation, we treat a function as the composition of all of its elementary operations. Thus, the derivative of the original function is the result of the Chain Rule combining the derivatives of is constituents.  
 
 ### Computational Graph
 
 The computational graph of the function allows us to see and record the progress of the Chain Rule at each step of composition. 
-$$
-F(x) = 3x^2 + sin(x)
-$$
+
+![Example Function](https://latex.codecogs.com/gif.latex?F%28x%29%20%3D%203x%5E2%20&plus;%20sin%28x%29)
+
 In the graph above, we can see the input term on the left side. We break the function into nodes, each representing an elementary function performed on previous nodes. The computational graph gives us a visual understanding of how the function is being built up and how we are applying the Chain Rule to form the derivative.
 
 The computational graph visualizes the trace table where each elementary function performed gets its own row of current inputs, values, the derivative of the elementary function (as determined by previous steps) and the value of the derivative of the elementary function evaluated at the current value. 
