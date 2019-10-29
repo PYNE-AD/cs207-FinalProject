@@ -189,20 +189,20 @@ The core data structures are:
 ## Elementary Functions
 
 Elementary functions will be dealt with in a specific module called `elemFunctions.py` which will hold Python functions that return the hard-coded derivative the elementary function. Functions will include many of those defined in `numpy`:
-	* `sin`
-	* `cos`
-	* `tan`
-	* `arcsin`
-	* `arccos`
-	* `arctan`
-	* `sinh`
-	* `cosh`
-	* `tanh`
-	* `arcsinh`
-	* `arccosh`
-	* `arctanh`
-	* `log`
-	* `log10`
+* `sin`
+* `cos`
+* `tan`
+* `arcsin`
+* `arccos`
+* `arctan`
+* `sinh`
+* `cosh`
+* `tanh`
+* `arcsinh`
+* `arccosh`
+* `arctanh`
+* `log`
+* `log10`
 
 An example for `sin` is illustrated below.
 
