@@ -36,52 +36,110 @@ The computational graph of the function allows us to see and record the progress
 
 In the graph above, we can see the input term on the left side. We break the function into nodes, each representing an elementary function performed on previous nodes. The computational graph gives us a visual understanding of how the function is being built up and how we are applying the Chain Rule to form the derivative.
 
+### Trace Table
+
 The computational graph visualizes the trace table where each elementary function performed gets its own row of current inputs, values, the derivative of the elementary function (as determined by previous steps) and the value of the derivative of the elementary function evaluated at the current value. 
+
+Example trace table:
+
+| Trace         | Elementary Function           | Elementary Function Derivative   | Current Value           | ∇x          |
+| ------------- | ----------------------------- | -------------------------------- | ----------------------- | ----------- |
+| x<sub>1</sub> | x<sub>1</sub>                 | ẋ<sub>1</sub>                    | x                       | 1           |
+| x<sub>2</sub> | x<sub>1</sub><sup>2</sup>     | 2x<sub>2</sub>ẋ<sub>1</sub>      | 2x                      | 2x          |
+| x<sub>3</sub> | 3x<sub>2</sub>                | 3ẋ<sub>2</sub>                   | 3x<sup>2</sup>          | 6x          |
+| x<sub>4</sub> | sin(x<sub>1</sub>)            | cos(x<sub>1</sub>) ẋ<sub>1</sub> | sin(x)                  | cos(x)      |
+| x<sub>5</sub> | x<sub>3</sub> + x<sub>4</sub> | ẋ<sub>3</sub> + ẋ<sub>4</sub>    | 3x<sup>2</sup> + sin(x) | 6x + cos(x) |
+
+Automatic Differentiation moves forward through this graph (but does not necessarily have to record all the rows) to calculate the derivative of the full function. The value of the derivative ẋ<sub>1</sub> is determined by a seed vector. 
 
 In linear algebraic terms, AD computes the derivative as the dot product of the gradient and the seed vector: a vector of derivative values initialized for the variables of interest. 
 
 # How to Use AD-PYNE
 
+### Scalar Functions of Vectors
+
 The user will interact with the package within a Python script that imports their desired functionality. 
 
 ```python
 from AD-PYNE.AutoDiff import AutoDiff
-from AD-PYNE.elemFunctions import *
+import AD-PYNE.elemFunctions as adef
 ```
+
+**Note**:  As discussed in the **Data Structures** section below, a single value will be treated as a `numpy` array of size 1 x 1. Thus, <u>scalar functions of scalars</u> are treated as scalar functions of 1 x 1 vectors.
 
 The user instantiates an empty `AutoDiff` object. The user will build up their function using elementary functions and this empty `AutoDiff`object. 
 
 ```python
-# User instantiates empty AutoDiff object
+# User instantiates empty AutoDiff objects, the default seed for each variable is 1
 x = AutoDiff()
+y = AutoDiff()
 
 # User builds up function
-f = 3*x**2 + sin(x)
+f = 3*(x**2) + adef.sin(x-y)
 ```
 
- The user can evaluate the function in their `AutoDiff` object by calling the `evalFunc` function and passing in an array of values to evaluate at. (See the  **Data Structures** section for evaluating at a single point.) `evalFunc` will set the `.val`attribute of the `AutoDiff` object to the value of the function at the point (or vector) passed in.
+ The user can evaluate the function in their `AutoDiff` object by calling the `evalFunc` function and passing in a row vector of values to evaluate at. `evalFunc` will set the `.val`attribute of the `AutoDiff` object to the value of the function at vector passed in.
 
 ```python
-# Evaluate the function at the desired points
-f.evalFunc([[3, 4]])
+# Evaluate the function at the desired point x = 3 and y = 4
+f.evalFunc(np.array([[3, 4]]))
 
 # Access the evaluated function
 myVal = f.val
 ```
 
-The result will be a scalar or vector depending on the shape of the input. 
+The result will be a scalar.
 
- The user can evaluate the gradient of the function using Forward Mode in their AutoDiff object by calling the `evalGrad` function and passing in an array of values to evaluate at. `evalGrad` will set the `.der`arribute of the AutoDiff object to the value of the gradient at the point (or vector) passed in.
+ The user can evaluate the gradient of the function using Forward Mode in their AutoDiff object by calling the `evalGrad` function and passing in an array of values to evaluate at. `evalGrad` will set the `.der`arribute of the AutoDiff object to the value of the gradient at the vector passed in.
 
 ```python
-# Evaluate the derivative of the function at the desired points
-f.evalGrad([3, 4])
+# Evaluate the derivative of the function at the desired points x = 3 and y = 4
+f.evalGrad(np.array([[3, 4]]))
 
 # Access the evaluated derivative
 myDerivative = f.der
+
+# The partial derivative of x is stored in the first element of f.der
+myDerivativeX = f.der[0]
+
+# The partial derivative of y is stored in the second elmenet of f.der
+myDerivativeY = f.der[1]
 ```
 
-The result will be a vector of the evaluated partial derivatives. 
+The result will be a row vector of the evaluated partial derivatives. 
+
+### Vector Functions of Vectors
+
+The user can also build up vector functions with vectors. Vector functions of scalars are treated as a vector of size n x 1.
+
+```python
+# User instantiates empty AutoDiff objects
+X = AutoDiff()
+Y = AutoDiff()
+
+# User builds up function
+F = 3*(X**2) + adef.sin(X*Y)
+
+# User defines vectors for evaluation
+Xs = np.linspace(1, 100, num=100)
+Ys = np.linespace(-50, 50, num=100)
+
+# Evaluate the vector functions at the desired points
+F.evalFunc(np.array([[Xs], [Ys]]))
+myVal = F.val
+# Returns a vector size 100 x 1, where the evaluated value of each the ith function is found in the ith row
+
+# Evaluate the derivative of the function at the desired points
+F.evalFunc(np.array([[Xs], [Ys]]))
+myDerivative = F.der
+# Returns a vector of size 100 x 2
+
+# The vector partial derivatives of X are stored in the first column of f.der
+myDerivativeX = F.der[:, 0]
+
+# The vector derivatives of Y are stored in the second column of f.der
+myDerivativeY = F.der[:, 1]
+```
 
 ### Justification for Approach
 
@@ -126,7 +184,7 @@ This module contains the hard-coded derivatives of the elementary functions such
 
 ### AutoDiff
 
-This module contains the `AutoDiff` class that calculates the derivative of a function at a given point using forward mode. It will import the functions from the **elemFunctions** module to use in the class functions `evalFunc` and `evalGrad`.
+This module contains the `AutoDiff` class that calculates the derivative of a function at a given point using forward mode. It will import the functions from the **elemFunctions** module to use in the class functions `evalFunc`, `evalGrad`, `evalJacobian`.
 
 
 
@@ -166,25 +224,31 @@ The core data structures are:
 ### AutoDiff
 
 * Methods
-  * `evalFunc` evaluates the function at a given vector of values. 
-  * `evalGrad` evaluates the gradient at a given vector of values. 
-  * `__add__`
-  * `__radd__`
-  * `__mul__`
-  * `__rmul__`
+  * `evalFunc` evaluates the function at a given vector of values and stores in `self.val` .
+  * `evalGrad` evaluates the gradient at a given vector of values and stores in `self.der`.  If `self.seed` is the identity, the function also stores the calculated gradient in `self.jacobian`.
+  * `evalJacobian` evaluates the Jacobian matrix and stores in `self.jacobian`. 
+  * Overloaded Python operations:
+    * `__add__`
+    * `__radd__`
+    * `__sub__`
+    * `__rsub__`
+    * `__mul__`
+    * `__rmul__`
+    * `__truediv__`
+    * `__rtruediv__`
+    * `__pow__`
+    * `__rpow__`
 * Attributes
   * `val` is the value of the function.
   * `der`is the value of the derivative of the function.
-
-
+  * `seed` is the seed vector, defaulted to the identity. 
+  * `jacobian` is the Jacobian matrix, defaulted to `None`. 
 
 ## External Dependencies
 
 ### numpy
 
 `numpy` will be used to handle vector operations and math functions such as `sqrt`. 
-
-
 
 ## Elementary Functions
 
@@ -234,9 +298,6 @@ def sin(x):
             return new_x
         except AttributeError:
             return np.sin(x)
-
-
-    
 ```
 
 
