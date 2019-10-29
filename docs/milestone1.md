@@ -16,7 +16,7 @@ Automatic differentiation (AD) is the best of worlds: it is not as computational
 
 # Background
 
-Automatic differentiation teaches the computer how to calculate derivatives on its own without relying on the human coder's manual coding of derivatives or on potentially unstable and inaccurate approximations. AD breaks down the task of calculating a derivative of any function into a series of more simple elementary operations such as addition, multiplication, powers, natural log, etc. 
+Automatic differentiation teaches the computer how to calculate derivatives on its own without relying on the human coder's manual coding of derivatives or on potentially unstable and inaccurate approximations. AD breaks down the task of calculating a derivative of any function into a series of more simple elementary operations such as addition, multiplication, powers, natural log, etc., whose derivatives we already know. We piece together these derivatives using the Chain Rule.
 
 ### Chain Rule
 
@@ -26,7 +26,7 @@ This breakdown is made possible by the Chain Rule, where F(x) is a composition o
 
 ![Derivative of Composition](https://latex.codecogs.com/gif.latex?F%27%28x%29%20%3D%20f%27%28g%28x%29%29g%27%28x%29)
 
-In automatic differentiation, we treat a function as the composition of all of its elementary operations. Thus, the derivative of the original function is the result of the Chain Rule combining the derivatives of is constituents.  
+In automatic differentiation, we treat a function as the composition of all of its elementary operations. Thus, the derivative of the original function is the result of the Chain Rule combining the derivatives of its constituents.  
 
 ### Computational Graph
 
@@ -188,7 +188,21 @@ The core data structures are:
 
 ## Elementary Functions
 
-Elementary functions will be dealt with in a specific module called `elemFunctions.py` which will hold Python functions that return the hard-coded derivative the elementary function. 
+Elementary functions will be dealt with in a specific module called `elemFunctions.py` which will hold Python functions that return the hard-coded derivative the elementary function. Functions will include many of those defined in `numpy`:
+	* `sin`
+	* `cos`
+	* `tan`
+	* `arcsin`
+	* `arccos`
+	* `arctan`
+	* `sinh`
+	* `cosh`
+	* `tanh`
+	* `arcsinh`
+	* `arccosh`
+	* `arctanh`
+	* `log`
+	* `log10`
 
 An example for `sin` is illustrated below.
 
