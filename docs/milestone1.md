@@ -94,18 +94,30 @@ We chose to build up the `AutoDiff` objects first and evaluating later because i
 
 ## Directory Structure 
 
-AD-PYNE/
-    AD-PYNE/
-        \__init__.py
-        elemFunctions.py
-        AutoDiff.py
-        tests/
-            elemFunctions_tests.py
-            AutoDiff_tests.py
-        README.md
-        LICENSE
-        setup.py
-        requirements.txt
+
+	AD-PYNE/
+
+	    AD-PYNE/
+
+		\__init__.py
+
+		elemFunctions.py
+
+		AutoDiff.py
+
+		tests/
+
+		    elemFunctions_tests.py
+
+		    AutoDiff_tests.py
+
+		README.md
+
+		LICENSE
+
+		setup.py
+
+		requirements.txt
 
 
 
