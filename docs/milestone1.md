@@ -56,14 +56,13 @@ In linear algebraic terms, AD computes the derivative as the dot product of the 
 
 # How to Use AD-PYNE
 
-### Scalar Functions of Vectors
-
 The user will interact with the package within a Python script that imports their desired functionality. 
 
 ```python
 from AD-PYNE.AutoDiff import AutoDiff
 import AD-PYNE.elemFunctions as adef
 ```
+### Scalar Functions of Vectors
 
 **Note**:  As discussed in the **Data Structures** section below, a single value will be treated as a `numpy` array of size 1 x 1. Thus, <u>scalar functions of scalars</u> are treated as scalar functions of 1 x 1 vectors.
 
