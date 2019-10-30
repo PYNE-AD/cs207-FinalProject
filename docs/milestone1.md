@@ -32,7 +32,13 @@ In automatic differentiation, we treat a function as the composition of all of i
 
 The computational graph of the function allows us to see and record the progress of the Chain Rule at each step of composition. 
 
+**Example function:**
+
 ![Example Function](https://latex.codecogs.com/gif.latex?F%28x%29%20%3D%203x%5E2%20&plus;%20sin%28x%29)
+
+**Example computational graph:**
+
+![Computational Graph](images/comp_graph.png)
 
 In the graph above, we can see the input term on the left side. We break the function into nodes, each representing an elementary function performed on previous nodes. The computational graph gives us a visual understanding of how the function is being built up and how we are applying the Chain Rule to form the derivative.
 
@@ -40,7 +46,7 @@ In the graph above, we can see the input term on the left side. We break the fun
 
 The computational graph visualizes the trace table where each elementary function performed gets its own row of current inputs, values, the derivative of the elementary function (as determined by previous steps) and the value of the derivative of the elementary function evaluated at the current value. 
 
-Example trace table:
+**Example trace table:**
 
 | Trace         | Elementary Function           | Elementary Function Derivative   | Current Value           | ∇x          |
 | ------------- | ----------------------------- | -------------------------------- | ----------------------- | ----------- |
