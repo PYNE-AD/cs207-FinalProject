@@ -30,11 +30,18 @@ class AutoDiff():
 
 		'''
 		# Convert int or float to array
-		self.val = np.array(eval_value)
-		self.der = np.array(der_value*self.val**0.0)
+		self.val = self.convertNonArray(eval_value)
+		self.der = self.convertNonArray(der_value)*self.val**0.0
 		self.n = n
 		self.jacobian = self.calcJacobian(k, n) if jacobian.all() == None else jacobian*self.val**0.0
 	
+	def convertNonArray(self, value):
+		try: 
+			value.shape
+			return value
+		except:
+			return np.array([[value]])
+
 	def calcJacobian(self, k, n):
 		if k != 0:
 			rows = self.val.shape[0]
