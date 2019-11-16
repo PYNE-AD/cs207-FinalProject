@@ -6,7 +6,7 @@ def sinh(X):
 
         INPUTS
         ======
-        x: an AutoDiff object
+        X: an AutoDiff object
 
         RETURNS
         =======
@@ -14,17 +14,20 @@ def sinh(X):
 
         EXAMPLES
         ========
-        >>> sinhAutoDiff = sinh(x)
+        >>> sinhAutoDiff = sinh(X)
         >>> sinhAutoDiff.val
-        np.sinh(x.val)
+        np.sinh(X.val)
         >>> sinhAutoDiff.der
-        np.cosh(x.val)*x.der
+        np.cosh(X.val)*X.der
+        >>> sinhAutoDiff.jacobian
+        np.cosh(X.val)*X.jacobian
 
         '''
     try:
         val = np.sinh(X.val)
         der = np.cosh(X.val)*X.der
-        return AutoDiff(val, der)
+        jacobian = np.cosh(X.val)*X.jacobian
+        return AutoDiff(val, der, X.n, 0, jacobian)
     except AttributeError:
         return np.sinh(X)
 
@@ -33,7 +36,7 @@ def cosh(X):
 
         INPUTS
         ======
-        x: an AutoDiff object
+        X: an AutoDiff object
 
         RETURNS
         =======
@@ -41,17 +44,21 @@ def cosh(X):
 
         EXAMPLES
         ========
-        >>> coshAutoDiff = cosh(x)
+        >>> coshAutoDiff = cosh(X)
         >>> coshAutoDiff.val
-        np.cosh(x.val)
+        np.cosh(X.val)
         >>> coshAutoDiff.der
-        np.sinh(x.val)*x.der
+        np.sinh(X.val)*X.der
+        >>> coshAutoDiff.jacobian
+        p.cosh(X.val)*X.jacobian
+        
 
         '''
     try:
         val = np.cosh(X.val)
         der = np.sinh(X.val)*X.der
-        return AutoDiff(val, der)
+        jacobian = np.sinh(X.val)*X.jacobian
+        return AutoDiff(val, der, X.n, 0, jacobian)
     except AttributeError:
         return np.cosh(X)
 
@@ -60,7 +67,7 @@ def tanh(X):
 
         INPUTS
         ======
-        x: an AutoDiff object
+        X: an AutoDiff object
 
         RETURNS
         =======
@@ -68,16 +75,19 @@ def tanh(X):
 
         EXAMPLES
         ========
-        >>> tanhAutoDiff = tanh(x)
+        >>> tanhAutoDiff = tanh(X)
         >>> tanhAutoDiff.val
-        np.tanh(x.val)
-        >>> coshAutoDiff.der
+        np.tanh(X.val)
+        >>> tanhAutoDiff.der
         1/(np.cosh(X.val)**2)*X.der
+        >>>tanhAutoDiff.jacobian
+        1/(np.cosh(X.val)**2)*X.jacobian
 
         '''
     try:
         val = np.tanh(X.val)
         der = 1/(np.cosh(X.val)**2)*X.der
-        return AutoDiff(val, der)
+        jacobian = 1/(np.cosh(X.val)**2)*X.jacobian
+        return AutoDiff(val, der, X.n, 0, jacobian)
     except AttributeError:
         return np.tanh(X)
