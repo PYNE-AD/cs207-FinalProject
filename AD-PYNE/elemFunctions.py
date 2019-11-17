@@ -17,11 +17,13 @@ def arcsinh(x):
 	
 	EXAMPLES
 	========
-	>>> x = AutoDiff(0.5, 1)
+	>>> x = AutoDiff(0.5, 2, 1)
 	>>> myAutoDiff = arcsinh(x)
 	>>> myAutoDiff.val
 	2.3124383412727525
 	>>> myAutoDiff.der
+	0.39223227027
+	>>> myAutoDiff.jacobian
 	0.19611613513818404
 	
 	'''
@@ -214,7 +216,7 @@ def sqrt(x):
 
 # Temporary tests
 
-x = AutoDiff(np.array([[5]]).T, np.array([[1]]), 1, 1)
-print(x.val, x.der, x.jacobian)
-myAutoDiff = sqrt(x)
-print(myAutoDiff.val, myAutoDiff.der, myAutoDiff.jacobian)
+# x = AutoDiff(np.array([[5]]).T, np.array([[1]]), 1, 1)
+# print(x.val, x.der, x.jacobian)
+# myAutoDiff = sqrt(x)
+# print(myAutoDiff.val, myAutoDiff.der, myAutoDiff.jacobian)

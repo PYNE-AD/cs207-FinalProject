@@ -7,42 +7,44 @@ class AutoDiff():
 	An auto-differentiation object for scalar functions
 	'''
 
-	def __init__(self, eval_value, der_value, n=1, k=1, jacobian = np.array([[None]])):
+	def __init__(self, eval_value, der_value, n=1, k=1, jacobian_value = np.array([[None]])):
 		'''
 		INPUTS
 		======
 		eval_value: 	value to be evaluated at
 		der_value: 		evaluated value of the derivative
-		k:				denotes that the autodiff uses the kth input variable in a vector of 1 to n variables
 		n:				number of input variables the final function will use
+		k:				denotes that the autodiff uses the kth input variable in a vector of 1 to n variables
+		jacob_value: 	denotes the evaluted value of the jacobian
 		
 		RETURNS
 		=======
-		An AutoDiff object with calculated value and derivative.
+		An AutoDiff object with calculated value, derivative, and jacobian.
 		
 		EXAMPLES
 		========
-		>>> myAutoDiff = AutoDiff(np.array([[5, 1], [3, 2]]), np.array([[1, 0], [0, 1]])
-)
+		>>> myAutoDiff = AutoDiff(3, 2)
 		>>> myAutoDiff.val
-
+		3
 		>>> myAutoDiff.der
-
+		2
+		>>> myAutoDiff.jacobian
+		1
 		'''
 		# Convert int or float to array
-		self.val = self.convertNonArray(eval_value)
-		self.der = self.convertNonArray(der_value)*self.val**0.0
+		self.val = self._convertNonArray(eval_value)
+		self.der = self._convertNonArray(der_value)*self.val**0.0
 		self.n = n
-		self.jacobian = self.calcJacobian(k, n) if jacobian.all() == None else jacobian*self.val**0.0
+		self.jacobian = self._calcJacobian(k, n) if jacobian_value.all() == None else jacobian_value*self.val**0.0
 	
-	def convertNonArray(self, value):
+	def _convertNonArray(self, value):
 		try: 
 			value.shape
 			return value
 		except:
 			return np.array([[value]])
 
-	def calcJacobian(self, k, n):
+	def _calcJacobian(self, k, n):
 		if k != 0:
 			rows = self.val.shape[0]
 			seed = np.zeros([rows, n])
