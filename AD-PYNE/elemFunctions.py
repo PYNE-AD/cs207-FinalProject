@@ -59,8 +59,8 @@ def arccosh(x):
 	try:
 		new_val = np.arccosh(x.val)
 		# Derivative of arccosh is only defined when x > 1
-		new_der = ((1)/np.sqrt(x.val**2 - 1))*x.der if x.val > 1 else None
-		new_jacobian = ((1)/np.sqrt(x.val**2 - 1))*x.new_jacobian if x.val > 1 else None
+		new_der = ((1)/np.sqrt(x.val**2 - 1))*x.der # if x.val > 1 else None
+		new_jacobian = ((1)/np.sqrt(x.val**2 - 1))*x.jacobian # if x.val > 1 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.arccosh(x)
@@ -88,8 +88,8 @@ def arctanh(x):
 	'''
 	try:
 		new_val = np.arctanh(x.val)
-		new_der = ((1)/np.sqrt(1-x.val**2))*x.der
-		new_jacobian = ((1)/np.sqrt(1-x.val**2))*x.jacobian
+		new_der = ((1)/(1-x.val**2))*x.der
+		new_jacobian = ((1)/(1-x.val**2))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.arctanh(x)
