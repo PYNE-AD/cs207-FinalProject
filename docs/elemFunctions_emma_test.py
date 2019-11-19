@@ -107,9 +107,12 @@ def test_tan_ad_results():
 	assert f.jacobian == np.array([[1.0]])
 
 	# Undefined value and derivative when cos(val)==0
-	with pytest.raises(TypeError):
+	with pytest.warns(RuntimeWarning):
 		h = AutoDiff(np.pi/2, 1.0)
 		f = ef.tan(h)
+		assert np.isnan(f.val[0][0])
+		assert np.isnan(f.der[0][0])
+		assert np.isnan(f.jacobian[0][0])
 
 def test_tan_constant_results():
 	a = ef.tan(5)
@@ -119,17 +122,17 @@ def test_tan_constant_results():
 	c = ef.tan(0)
 	assert c == 0.0
 	# Value undefined when cos(val)==0
-	with pytest.raises(TypeError):
-		ef.tan(np.pi/2)
+	with pytest.warns(RuntimeWarning):
+		d = ef.tan(np.pi/2)
+		assert np.isnan(d)
 
 def test_tan_types():
 	with pytest.raises(TypeError):
 		ef.tan('x')
 	with pytest.raises(TypeError):
 		ef.tan("1234")
-	with pytest.raises(TypeError):
+	with pytest.raises((AttributeError and TypeError)):
 		ef.tan({1: 'x'})
-
 
 # Tests for square root function
 
@@ -141,14 +144,19 @@ def test_sqrt_ad_results():
 	assert f.der == np.array([[0.5 * 0.5 ** (-0.5) * 2.0]])
 	assert f.jacobian == np.array([[0.5 * 0.5 ** (-0.5)]])
 	# Value defined but derivative undefined when x == 0
-	with pytest.raises(TypeError):
+	with pytest.warns(RuntimeWarning):
 		y = AutoDiff(0, 2)
 		f = ef.sqrt(y)
+		assert f.val == np.array([[0]])
+		assert np.isinf(f.der[0][0])
+		assert np.isinf(f.jacobian[0][0])
 	# Value and derivative undefined when x < 0
-	with pytest.raises(TypeError):
+	with pytest.warns(RuntimeWarning):
 		z = AutoDiff(-0.5, 2)
 		f = ef.sqrt(z)
-	print('worked')
+		assert np.isnan(f.val[0][0])
+		assert np.isnan(f.der[0][0])
+		assert np.isnan(f.jacobian[0][0])
 
 def test_sqrt_constant_results():
 	a = ef.sqrt(5)
@@ -156,15 +164,14 @@ def test_sqrt_constant_results():
 	b = ef.sqrt(0)
 	assert b == 0.0
 	# Value undefined when x < 0
-	with pytest.raises(TypeError):
-		ef.sqrt(-5)
-	print('worked')
+	with pytest.warns(RuntimeWarning):
+		c = ef.sqrt(-5)
+		assert np.isnan(c)
 
 def test_sqrt_types():
 	with pytest.raises(TypeError):
 		ef.sqrt('x')
 	with pytest.raises(TypeError):
 		ef.sqrt("1234")
-	with pytest.raises(TypeError):
+	with pytest.raises(AttributeError and TypeError):
 		ef.sqrt({1: 'x'})
-	print('worked')
