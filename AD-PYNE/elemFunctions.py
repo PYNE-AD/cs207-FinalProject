@@ -84,35 +84,6 @@ def tanh(X):
     except AttributeError:
         return np.tanh(X)
 
-# log base 10
-def log10(X):
-    ''' Compute the natural log of an AutoDiff object and its derivative.
-    INPUTS
-    ======
-    X: an AutoDiff object
-    RETURNS
-    =======
-    A new AutoDiff object with calculated value and derivative.
-    EXAMPLES
-    ========
-    >>> X = AutoDiff(0.5, 2, 1)
-    >>> myAutoDiff = log(X)
-    >>> myAutoDiff.val
-    -0.3010299956639812
-    >>> myAutoDiff.der
-    1.737177927613007
-    >>>myAutoDiff.jacobian
-    0.8685889638065035
-    '''
-    try:
-        val = np.log10(X.val)
-        # Derivative not defined when X = 0
-        der = (1/(X.val*np.log(10)))*X.der if X.val != 0 else None
-        jacobian = (1/(X.val*np.log(10)))*X.jacobian if X.val != 0 else None
-        return AutoDiff(val, der, X.n, 0, jacobian)
-    except AttributeError:
-        return np.log10(X)
-        
 # hyperbolic arc sine
 def arcsinh(x):
 	''' Compute the hyperbolic arc sine of an AutoDiff object and its derivative.
@@ -159,11 +130,14 @@ def arccosh(x):
 	
 	EXAMPLES
 	========
+	>>> x = AutoDiff(1.1, 2)
 	>>> myAutoDiff = arccosh(x)
 	>>> myAutoDiff.val
-	np.arccosh(x.val)
+	0.4435682543851154
 	>>> myAutoDiff.der
-	(1)/(np.sqrt(x**2 - 1))
+	(2/np.sqrt(1.1**2 - 1))
+	>>> myAutoDiff.jacobian
+	(1/np.sqrt(1.1**2 - 1))
 	
 	'''
 	try:
@@ -189,11 +163,14 @@ def arctanh(x):
 	
 	EXAMPLES
 	========
+	>>> x = AutoDiff(0.5, 2)
 	>>> myAutoDiff = arctanh(x)
 	>>> myAutoDiff.val
-	np.arctanh(x.val)
+	0.5493061443340548
 	>>> myAutoDiff.der
-	(1)/(np.sqrt(x**2 - 1))
+	2/(1-(0.5)**2)
+	>>> myAutoDiff.jacobian
+	1/(1-(0.5)**2)
 	
 	'''
 	try:
@@ -218,11 +195,14 @@ def exp(x):
 	
 	EXAMPLES
 	========
+	>>> x = AutoDiff(10, 2)
 	>>> myAutoDiff = exp(x)
 	>>> myAutoDiff.val
-
+	22026.465794806718
 	>>> myAutoDiff.der
-		
+	2*22026.465794806718
+	>>> myAutoDiff.jacobian
+	22026.465794806718	
 	'''
 	try:
 		new_val = np.exp(x.val)
@@ -246,11 +226,14 @@ def log(x):
 	
 	EXAMPLES
 	========
+	x = AutoDiff(4, 2)
 	>>> myAutoDiff = log(x)
 	>>> myAutoDiff.val
-	np.log(x.val)
+	1.3862943611198906
 	>>> myAutoDiff.der
-	(1)/(np.sqrt(x**2 - 1))
+	0.5
+	>>> myAutoDiff.jacobian
+	0.25
 	
 	'''
 	try:
@@ -276,18 +259,21 @@ def log10(x):
 	
 	EXAMPLES
 	========
-	>>> myAutoDiff = log(x)
-	>>> myAutoDiff.val
-	np.log(x.val)
-	>>> myAutoDiff.der
-	(1)/(np.sqrt(x**2 - 1))
+    >>> X = AutoDiff(0.5, 2, 1)
+    >>> myAutoDiff = log(X)
+    >>> myAutoDiff.val
+    -0.3010299956639812
+    >>> myAutoDiff.der
+    1.737177927613007
+    >>>myAutoDiff.jacobian
+    0.8685889638065035
 	
 	'''
 	try:
 		new_val = np.log10(x.val)
 		# Derivative not defined when x = 0
-		new_der = (1/(x.val*np.log(10)))*x.der # if x.val != 0 else None
-		new_jacobian = (1/(x.val*np.log(10)))*x.jacobian # if x.val != 0 else None
+		new_der = (1/(x.val*np.log(10)))*x.der
+		new_jacobian = (1/(x.val*np.log(10)))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.log10(x)
@@ -318,8 +304,8 @@ def sqrt(x):
 		# Value not defined when x < 0
 		new_val = np.sqrt(x.val) # if x.val >= 0 else None
 		# Derivative not defined when x <= 0
-		new_der = 0.5 * x.val ** (-0.5) * x.der # if x.val > 0 else None
-		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian # if x.val > 0 else None
+		new_der = 0.5 * x.val ** (-0.5) * x.der
+		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.sqrt(x)
