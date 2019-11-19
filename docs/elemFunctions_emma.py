@@ -1,6 +1,7 @@
 # Emma's Elementary Functions (sin, cos, tan)
 
 import numpy as np
+import warnings
 from AutoDiff import AutoDiff
 
 # Sine function
@@ -93,11 +94,12 @@ def tan(x):
 	'''
 	try:
 		# Value and derivative undefined when divisible by pi/2 but not pi
+		# To make sure the asymptotes are undefined:
 		if x.val%(np.pi/2)==0 and x.val%np.pi!=0:
-			new_val = None
-			new_der = None
-			new_jacobian = None
-			raise TypeError('Undefined at value')
+			new_val = np.nan
+			new_der = np.nan
+			new_jacobian = np.nan
+			warnings.warn('Undefined at value', RuntimeWarning)
 		else:
 			new_val = np.tan(x.val)
 			new_der = x.der / (np.cos(x.val)**2.0)
@@ -105,14 +107,13 @@ def tan(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		if x%(np.pi/2)==0 and x%np.pi!=0:
-			raise TypeError('Undefined at value')
+			warnings.warn('Undefined at value', RuntimeWarning)
+			return np.nan
 		else:
 			return np.tan(x)
-	except TypeError:
-		raise
 
 
-# Paulina's square root function
+# Paulina's square root function, Emma's edits
 def sqrt(x):
 	''' Compute the square root an AutoDiff object and its derivative.
 
@@ -135,26 +136,13 @@ def sqrt(x):
 
 	'''
 	try:
-		# Value not defined when x < 0, derivative not defined when x <= 0
-		if x.val < 0.0:
-			new_val = None
-			new_der = None
-			new_jacobian = None
-			raise TypeError('Undefined at value')
-		elif x.val == 0.0:
-			new_val = np.sqrt(x.val)
-			new_der = None
-			new_jacobian = None
-			raise TypeError('Derivative undefined at value')
-		else:
-			new_val = np.sqrt(x.val)
-			new_der = 0.5 * x.val ** (-0.5) * x.der
-			new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
+		new_val = np.sqrt(x.val)
+		new_der = 0.5 * x.val ** (-0.5) * x.der
+		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		if x < 0.0:
-			raise TypeError('Undefined at value')
+			warnings.warn('Undefined at value', RuntimeWarning)
+			return np.nan
 		else:
 			return np.sqrt(x)
-	except TypeError:
-		raise
