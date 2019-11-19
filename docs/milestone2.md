@@ -62,13 +62,13 @@ Automatic Differentiation moves forward through this graph (but does not necessa
 
 The trace table above shows us how to manually perform the forward mode of automatic differentiation for scalar functions of a single variable; however, during practical application we will need to be able to handle systems of equations (*f* as a vector), which will require differentiation of a vector function of multiple variables. An important element of this process is the Jacobian matrix, which contains the function’s partial derivatives.
 
-![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/jacobian.gif)
+![Jacobian](images/jacobian.gif)
 
 We know from above that automatic differentiation computes the derivative as the dot product of the gradient and the seed vector, written as:
 
-![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/product_gradient_seed.gif)
+![Product Gradient Seed](images/product_gradient_seed.gif)
 
- Considering the Jacobian form, what forward mode really computes is ![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/jp.gif). Beyond this, we can choose the value of the seed vectors {*p*<sub>1</sub>, ..., *p*<sub>*n*</sub>} where *p*<sub>i</sub> ∈  ℝ<sup>*n*</sup> to form the entirety or part of the Jacobian, depending on our applications.
+ Considering the Jacobian form, what forward mode really computes is ![JP](images/jp.gif). Beyond this, we can choose the value of the seed vectors {*p*<sub>1</sub>, ..., *p*<sub>*n*</sub>} where *p*<sub>i</sub> ∈  ℝ<sup>*n*</sup> to form the entirety or part of the Jacobian, depending on our applications.
 
 # How to Use AD-PYNE
 
