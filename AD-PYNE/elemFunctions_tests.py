@@ -10,21 +10,21 @@ def test_arcsinh_ad_results():
 	# positive real numbers
 	x = AutoDiff(1, 2)
 	f = ef.arcsinh(x)
-	assert f.val == np.array([[0.881373587019543]])
-	assert f.der == np.array([[2/np.sqrt(2)]])
-	assert f.jacobian == np.array([[1/np.sqrt(2)]])
+	assert f.val == 0.881373587019543
+	assert f.der == 2/np.sqrt(2)
+	assert f.jacobian == 1/np.sqrt(2)
 	# negative real numbers
 	y = AutoDiff(-1, 2)
 	f = ef.arcsinh(y)
-	assert f.val == np.array([[-0.881373587019543]])
-	assert f.der == np.array([[2/np.sqrt(2)]])
-	assert f.jacobian == np.array([[1/np.sqrt(2)]])
+	assert f.val == -0.881373587019543
+	assert f.der == 2/np.sqrt(2)
+	assert f.jacobian == 1/np.sqrt(2)
 	# zero
 	z = AutoDiff(0, 2)
 	f = ef.arcsinh(z)
-	assert f.val == np.array([[0.0]])
-	assert f.der == np.array([[2.0]])
-	assert f.jacobian == np.array([[1.0]])
+	assert f.val == 0.0
+	assert f.der == 2.0
+	assert f.jacobian == 1.0
 
 def test_arcsinh_constant_results():
 	a = ef.arcsinh(5)
@@ -49,25 +49,30 @@ def test_arccosh_ad_results():
 	# derivative defined at positive real numbers x > 1
 	x = AutoDiff(1.1, 2)
 	f = ef.arccosh(x)
-	assert f.val == np.array([[0.4435682543851154]])
-	assert f.der == np.array([[2/np.sqrt(1.1**2 - 1)]])
-	assert f.jacobian == np.array([[1/np.sqrt(1.1**2 - 1)]])
+	assert f.val == 0.4435682543851154
+	assert f.der == 2/np.sqrt(1.1**2 - 1)
+	assert f.jacobian == 1/np.sqrt(1.1**2 - 1)
 	# value defined at x = 1, derivative not defined
-	with pytest.raises(TypeError):
+	with pytest.warns(RuntimeWarning):
 		y = AutoDiff(1, 2)
 		f = ef.arccosh(y)
+		assert np.isinf(f.der)
+		assert np.isinf(f.jacobian)
 	# neither value nor derivative defined at x < 1
 	with pytest.warns(RuntimeWarning):
-		with pytest.raises(TypeError):
-			z = AutoDiff(0, 2)
-			f = ef.arccosh(z)
+		z = AutoDiff(0, 2)
+		f = ef.arccosh(z)
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
 
 def test_arccosh_constant_results():
 	a = ef.arccosh(5)
 	assert a == 2.2924316695611777
 	# value not defined at x < 1
 	with pytest.warns(RuntimeWarning):
-		ef.arccosh(0.9)
+		a = ef.arccosh(0.9)
+		assert np.isnan(a)
 
 def test_arccosh_types():
 	with pytest.raises(TypeError):
@@ -83,21 +88,27 @@ def test_arctanh_ad_results():
 	# value defined at real numbers (-1, 1)
 	x = AutoDiff(0.5, 2)
 	f = ef.arctanh(x)
-	assert f.val == np.array([[0.5493061443340548]])
-	assert f.der == np.array([[2/(1-(0.5)**2)]])
-	assert f.jacobian == np.array([[1/(1-(0.5)**2)]])
+	assert f.val == 0.5493061443340548
+	assert f.der == 2/(1-(0.5)**2)
+	assert f.jacobian == 1/(1-(0.5)**2)
 	y = AutoDiff(-0.99999, 2)
 	f = ef.arctanh(y)
-	assert f.val == np.array([[-6.1030338227611125]])
-	assert f.der == np.array([[2/(1-(-0.99999)**2)]])
-	assert f.jacobian == np.array([[1/(1-(-0.99999)**2)]])
+	assert f.val == -6.1030338227611125
+	assert f.der == 2/(1-(-0.99999)**2)
+	assert f.jacobian == 1/(1-(-0.99999)**2)
 	# test for real numbers not in (-1, 1)
 	with pytest.warns(RuntimeWarning):
 		z = AutoDiff(-1, 2)
 		f = ef.arctanh(z)
+		assert np.isinf(f.val)
+		assert np.isinf(f.der)
+		assert np.isinf(f.jacobian)
 	with pytest.warns(RuntimeWarning):
 		z = AutoDiff(10, 2)
 		f = ef.arctanh(z)
+		assert np.isnan(f.val)
+		assert f.der == ((2)/(1-10**2))
+		assert f.jacobian == ((1)/(1-10**2))
 
 def test_arctanh_constant_results():
 	a = ef.arctanh(0.99999)
@@ -124,19 +135,19 @@ def test_exp_ad_results():
 	# positive numbers
 	x = AutoDiff(10, 2)
 	f = ef.exp(x)
-	assert f.val == np.array([[22026.465794806718]])
-	assert f.der == np.array([[2*22026.465794806718]])
-	assert f.jacobian == np.array([[22026.465794806718]])
+	assert f.val == 22026.465794806718
+	assert f.der == 2*22026.465794806718
+	assert f.jacobian == 22026.465794806718
 	y = AutoDiff(-5, 2)
 	f = ef.exp(y)
-	assert f.val == np.array([[0.006737946999085467]])
-	assert f.der == np.array([[2*0.006737946999085467]])
-	assert f.jacobian == np.array([[0.006737946999085467]])
+	assert f.val == 0.006737946999085467
+	assert f.der == 2*0.006737946999085467
+	assert f.jacobian == 0.006737946999085467
 	z = AutoDiff(0, 2)
 	f = ef.exp(z)
-	assert f.val == np.array([[1.0]])
-	assert f.der == np.array([[2.0]])
-	assert f.jacobian == np.array([[1.0]])
+	assert f.val == 1.0
+	assert f.der == 2.0
+	assert f.jacobian == 1.0
 
 def test_exp_constant_results():
 	a = ef.exp(0)
@@ -154,3 +165,4 @@ def test_exp_types():
 	with pytest.raises(AttributeError):
 		ef.exp({1: 'x'})
 	
+test_arctanh_ad_results()

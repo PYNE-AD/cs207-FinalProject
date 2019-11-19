@@ -1,42 +1,80 @@
+import warnings
+import pytest
 import numpy as np
 from AutoDiff import AutoDiff
 
-print("test 1")
-x = AutoDiff(5, 1, 2, 1)
-y = AutoDiff(3, 1, 2, 2)
+# helper function tests
 
-print("x")
-print(x.val)
-print(x.der)
-print(x.jacobian)
+# _convertNonArray
 
-print("y")
-print(y.val)
-print(y.der)
-print(y.jacobian)
+# _calcJacobian
 
-f = 3*x**2 + 2*y**3
-print("f")
-print(f.val)
-print(f.der)
-print(f.jacobian)
+# addition tests
+def test_add_ad_results():
+	# single input cases
+	# positive numbers
+	x = AutoDiff(5, 2)
+	f = x + x
+	assert f.val == 10
+	assert f.der == 4
+	assert f.jacobian == 2
+	# negative numbers
+	y = AutoDiff(-5, 2)
+	f = y + y
+	assert f.val == -10
+	assert f.der == 4
+	assert f.jacobian == 2
 
-print("\ntest 2")
-x = AutoDiff(5, 1)
-y = AutoDiff(3, 2)
+def test_add_constant_results():
+	# single input case
+	# positive numbers
+	x = AutoDiff(5, 2)
+	f = x + 3
+	assert f.val == 8
+	assert f.der == 2
+	assert f.jacobian == 1
+	# negative numbers
+	x = AutoDiff(-5, 2)
+	f = x + 3
+	assert f.val == -2
+	assert f.der == 2
+	assert f.jacobian == 1
 
-print("x")
-print(x.val)
-print(x.der)
-print(x.jacobian)
+# reverse addition tests
+def test_add_constant_results():
+	# single input case
+	# positive numbers
+	x = AutoDiff(5, 2)
+	f = x + 3
+	assert f.val == 8
+	assert f.der == 2
+	assert f.jacobian == 1
+	# negative numbers
+	x = AutoDiff(-5, 2)
+	f = x + 3
+	assert f.val == -2
+	assert f.der == 2
+	assert f.jacobian == 1
+# subtraction tests
 
-print("y")
-print(y.val)
-print(y.der)
-print(y.jacobian)
+# reverse subtraction tests
 
-f = 3*x**2 + (x/2) - (x**-3)
-print("f")
-print(f.val)
-print(f.der)
-print(f.jacobian)
+# multiplication tests
+
+# reverse multiplication tests
+
+# division tests
+
+# reverse division tests
+
+# power tests
+
+# reverse power tests
+
+# positive tests
+
+# negation tests
+
+# absolute value tests
+
+# invert tests

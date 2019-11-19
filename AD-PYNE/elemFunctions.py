@@ -59,8 +59,8 @@ def arccosh(x):
 	try:
 		new_val = np.arccosh(x.val)
 		# Derivative of arccosh is only defined when x > 1
-		new_der = ((1)/np.sqrt(x.val**2 - 1))*x.der # if x.val > 1 else None
-		new_jacobian = ((1)/np.sqrt(x.val**2 - 1))*x.jacobian # if x.val > 1 else None
+		new_der = ((1)/np.sqrt(x.val**2 - 1))*x.der  # if x.val > 1 else None
+		new_jacobian = ((1)/np.sqrt(x.val**2 - 1))*x.jacobian  # if x.val > 1 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.arccosh(x)
@@ -146,8 +146,8 @@ def log(x):
 	try:
 		new_val = np.log(x.val)
 		# Derivative not defined when x = 0
-		new_der = (1/x.val)*x.der if x.val != 0 else None
-		new_jacobian = (1/x.val)*x.jacobian if x.val != 0 else None
+		new_der = (1/x.val)*x.der # if x.val != 0 else None
+		new_jacobian = (1/x.val)*x.jacobian # if x.val != 0 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.log(x)
@@ -176,8 +176,8 @@ def log10(x):
 	try:
 		new_val = np.log10(x.val)
 		# Derivative not defined when x = 0
-		new_der = (1/(x.val*np.log(10)))*x.der if x.val != 0 else None
-		new_jacobian = (1/(x.val*np.log(10)))*x.jacobian if x.val != 0 else None
+		new_der = (1/(x.val*np.log(10)))*x.der # if x.val != 0 else None
+		new_jacobian = (1/(x.val*np.log(10)))*x.jacobian # if x.val != 0 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.log10(x)
@@ -206,17 +206,11 @@ def sqrt(x):
 	'''
 	try:
 		# Value not defined when x < 0
-		new_val = np.sqrt(x.val) if x.val >= 0 else None
+		new_val = np.sqrt(x.val) # if x.val >= 0 else None
 		# Derivative not defined when x <= 0
-		new_der = 0.5 * x.val ** (-0.5) * x.der if x.val > 0 else None
-		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian if x.val > 0 else None
+		new_der = 0.5 * x.val ** (-0.5) * x.der # if x.val > 0 else None
+		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian # if x.val > 0 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		return np.sqrt(x)
 
-# Temporary tests
-
-# x = AutoDiff(np.array([[5]]).T, np.array([[1]]), 1, 1)
-# print(x.val, x.der, x.jacobian)
-# myAutoDiff = sqrt(x)
-# print(myAutoDiff.val, myAutoDiff.der, myAutoDiff.jacobian)

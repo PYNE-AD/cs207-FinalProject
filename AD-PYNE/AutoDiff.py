@@ -1,4 +1,4 @@
-# First pass at AutoDiff
+s# First pass at AutoDiff
 
 import numpy as np
 
@@ -33,9 +33,9 @@ class AutoDiff():
 		'''
 		# Convert int or float to array
 		self.val = self._convertNonArray(eval_value)
-		self.der = self._convertNonArray(der_value)*self.val**0.0
+		self.der = self._convertNonArray(der_value)*(self.val**0.0)
 		self.n = n
-		self.jacobian = self._calcJacobian(k, n) if jacobian_value.all() == None else jacobian_value*self.val**0.0
+		self.jacobian = self._calcJacobian(k, n, jacobian_value)
 	
 	def _convertNonArray(self, value):
 		try: 
@@ -44,12 +44,16 @@ class AutoDiff():
 		except:
 			return np.array([[value]])
 
-	def _calcJacobian(self, k, n):
-		if k != 0:
-			rows = self.val.shape[0]
-			seed = np.zeros([rows, n])
-			seed[:, k-1] = 1
-			return seed
+	def _calcJacobian(self, k, n, jacobian_value):
+		if np.all(np.equal(jacobian_value, None)):	
+			if k != 0:
+				rows = self.val.shape[0]
+				seed = np.zeros([rows, n])
+				seed[:, k-1] = 1
+				return seed
+		else:
+			return jacobian_value*self.val**0.0
+
 
 	def __add__(self, other):
 		try:
@@ -141,8 +145,8 @@ class AutoDiff():
 
 	def __abs__(self):
 		try:
-			return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val) if abs(self.val) != 0 else None),
-				self.n, 0, ((self.val * self.jacobian) / abs(self.val) if abs(self.val) != 0 else None))
+			return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val)),
+				self.n, 0, ((self.val * self.jacobian) / abs(self.val)))
 		except AttributeError:
 			return abs(self)
 
