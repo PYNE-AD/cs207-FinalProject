@@ -3,8 +3,8 @@ import pytest
 import numpy as np
 # from ADPYNE import AutoDiff
 # from ADPYNE import elemFunctions as ef
-from ADPYNE import AutoDiff
-from ADPYNE import elemFunctions as ef
+from ADPYNE.AutoDiff import AutoDiff
+from ADPYNE.elemFunctions import elemFunctions as ef
 
 # helper function tests
 
