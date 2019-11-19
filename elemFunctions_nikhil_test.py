@@ -2,7 +2,7 @@ import warnings
 import pytest
 import numpy as np
 from AutoDiff import AutoDiff
-import elemFunctions as elem
+import elemFunctions_nikhil as elem
 
 # ------------ARCSIN----------------#
 
@@ -13,12 +13,23 @@ def test_arcsin_ad_results():
 	assert f.val == np.array([[0.5235987755982988]])
 	assert f.der == np.array([[2/np.sqrt(1-0.5**2)]])
 	assert f.jacobian == np.array([[1/np.sqrt(1-0.5**2)]])
-	# out of bounds
-	y = AutoDiff(-2, 2)
-	f = elem.arcsin(y)
-	assert np.isnan(f.val[0][0])
-	assert np.isnan(f.der[0][0])
-	assert np.isnan(f.jacobian[0][0])
+	
+	# out of bounds - undefined sqrt
+	with pytest.warns(RuntimeWarning):
+		y = AutoDiff(-2, 2)
+		f = elem.arcsin(y)
+		assert np.isnan(f.val[0][0])
+		assert np.isnan(f.der[0][0])
+		assert np.isnan(f.jacobian[0][0])
+
+	# out of bounds - div by zero
+	with pytest.warns(RuntimeWarning):
+		y = AutoDiff(1, 2)
+		f = elem.arcsin(y)
+		assert f.val == np.array([[1.5707963267948966]])
+		assert np.isinf(f.der[0][0])
+		assert np.isinf(f.jacobian[0][0])
+	
 	# zero
 	z = AutoDiff(0, 2)
 	f = elem.arcsin(z)
@@ -29,10 +40,13 @@ def test_arcsin_ad_results():
 def test_arcsin_constant_results():
 	a = elem.arcsin(0.7)
 	assert a == 0.775397496610753
-	b = elem.arcsin(-5)
-	assert np.isnan(b)
-	c = elem.arcsin(0)
-	assert c == 0.0
+
+	b = elem.arcsin(0)
+	assert b == 0.0
+
+	with pytest.warns(RuntimeWarning):
+		c = elem.arcsin(-5)
+		assert np.isnan(c)
 
 def test_arcsin_types():
 	with pytest.raises(TypeError):
@@ -52,12 +66,23 @@ def test_arccos_ad_results():
 	assert f.val == np.array([[1.0471975511965976]])
 	assert f.der == np.array([[-2/np.sqrt(1-0.5**2)]])
 	assert f.jacobian == np.array([[-1/np.sqrt(1-0.5**2)]])
-	# out of bounds
-	y = AutoDiff(-2, 2)
-	f = elem.arccos(y)
-	assert np.isnan(f.val[0][0])
-	assert np.isnan(f.der[0][0])
-	assert np.isnan(f.jacobian[0][0])
+	
+	# out of bounds - negative sqrt
+	with pytest.warns(RuntimeWarning):
+		y = AutoDiff(-2, 2)
+		f = elem.arccos(y)
+		assert np.isnan(f.val[0][0])
+		assert np.isnan(f.der[0][0])
+		assert np.isnan(f.jacobian[0][0])
+	
+	# out of bounds - divide by 0
+	with pytest.warns(RuntimeWarning):
+		y = AutoDiff(1, 2)
+		f = elem.arccos(y)
+		assert f.val == np.array([[0]])
+		assert np.isneginf(f.der[0][0])
+		assert np.isneginf(f.jacobian[0][0])
+	
 	# zero
 	z = AutoDiff(0, 2)
 	f = elem.arccos(z)
@@ -68,10 +93,14 @@ def test_arccos_ad_results():
 def test_arccos_constant_results():
 	a = elem.arccos(0.7)
 	assert a == 0.7953988301841436
-	b = elem.arccos(-5)
-	assert np.isnan(b)
-	c = elem.arccos(0)
-	assert c == 1.5707963267948966
+	
+	b = elem.arccos(0)
+	assert b == 1.5707963267948966
+
+	with pytest.warns(RuntimeWarning):
+		c = elem.arccos(-5)
+		assert np.isnan(c)
+	
 
 def test_arccos_types():
 	with pytest.raises(TypeError):
@@ -134,14 +163,6 @@ def test_add_ad_results():
 	assert f.der == np.array([[4]])
 	assert f.jacobian == np.array([[2]])
 	
-	# two different vars 
-	x = AutoDiff(-2, 4, 2, 1)
-	y = AutoDiff(3, 1, 2, 2)
-	f = x+y
-	assert f.val == np.array([[1]])
-	assert f.der == np.array([[5]])
-	assert np.array_equal(f.jacobian,np.array([[1,1]]))
-	
 	# add with constant
 	z = AutoDiff(7, 2)
 	f = z+3
@@ -161,14 +182,6 @@ def test_radd_ad_results():
 	assert f.val == np.array([[-14]])
 	assert f.der == np.array([[2]])
 	assert f.jacobian == np.array([[2]])
-	
-	# two different vars 
-	x = AutoDiff(0, 2, 2, 1)
-	y = AutoDiff(3, 3, 2, 2)
-	f = y+x
-	assert f.val == np.array([[3]])
-	assert f.der == np.array([[5]])
-	assert np.array_equal(f.jacobian,np.array([[1,1]]))
 	
 	# add with constant
 	z = AutoDiff(3, 2)
