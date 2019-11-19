@@ -149,9 +149,3 @@ class AutoDiff():
 				self.n, 0, ((self.val * self.jacobian) / abs(self.val)))
 		except AttributeError:
 			return abs(self)
-
-	def __invert__(self):
-		try:
-			return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
-		except AttributeError:
-			return ~self
