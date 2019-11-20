@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/PYNE-AD/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/PYNE-AD/cs207-FinalProject)
+
+[![Coverage Status](https://codecov.io/gh/PYNE-AD/cs207-FinalProject/branch/master/graph/badge.svg)](https://codecov.io/gh/PYNE-AD/cs207-FinalProject)
+
 # cs207-FinalProject
 
 ## Group No. 12
@@ -10,13 +14,6 @@
 - Nikhil Vanderklaauw
 
 - Emma Li
-
-
-[![Build Status](https://travis-ci.org/PYNE-AD/cs207-FinalProject.svg?branch=master)](https://travis-ci.org/PYNE-AD/cs207-FinalProject)
-
-[![Coverage Status](https://codecov.io/gh/PYNE-AD/cs207-FinalProject/branch/master/graph/badge.svg)](https://codecov.io/gh/PYNE-AD/cs207-FinalProject)
-
-
 
 ## Installing
 
