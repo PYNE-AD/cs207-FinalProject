@@ -1,6 +1,10 @@
 import warnings
 import pytest
 import numpy as np
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
 from AutoDiff import AutoDiff
 import elemFunctions as ef
 
@@ -39,8 +43,6 @@ def test_sin_types():
 		ef.sin('x')
 	with pytest.raises(TypeError):
 		ef.sin("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.sin({1: 'x'})
 
 
 # ------------COSINE----------------#
@@ -78,8 +80,6 @@ def test_cos_types():
 		ef.cos('x')
 	with pytest.raises(TypeError):
 		ef.cos("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.cos({1: 'x'})
 
 
 # ------------TANGENT----------------#
@@ -130,8 +130,6 @@ def test_tan_types():
 		ef.tan('x')
 	with pytest.raises(TypeError):
 		ef.tan("1234")
-	with pytest.raises((AttributeError and TypeError)):
-		ef.tan({1: 'x'})
 
 
 # ------------ARC SINE----------------#
@@ -183,8 +181,6 @@ def test_arcsin_types():
 		ef.arcsin('x')
 	with pytest.raises(TypeError):
 		ef.arcsin("1234")
-	with pytest.raises((TypeError and AttributeError)):
-		ef.arcsin({1: 'x'})
 
 
 # ------------ARC COSINE----------------#
@@ -237,8 +233,6 @@ def test_arccos_types():
 		ef.arccos('x')
 	with pytest.raises(TypeError):
 		ef.arccos("1234")
-	with pytest.raises((TypeError and AttributeError)):
-		ef.arccos({1: 'x'})
 
 
 # ------------ARC TANGENT----------------#
@@ -277,8 +271,6 @@ def test_arctan_types():
 		ef.arctan('x')
 	with pytest.raises(TypeError):
 		ef.arctan("1234")
-	with pytest.raises((TypeError and AttributeError)):
-		ef.arctan({1: 'x'})
 
 
 
@@ -299,8 +291,6 @@ def test_sinh_types():
 		ef.sinh('x')
 	with pytest.raises(TypeError):
 		ef.sinh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.sinh({1: 'x'})
 
 # ------------HYPERBOLIC COS----------------#
 def test_cosh_results():
@@ -319,8 +309,6 @@ def test_cosh_types():
 		ef.cosh('x')
 	with pytest.raises(TypeError):
 		ef.cosh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.cosh({1: 'x'})
 
 # ------------HYPERBOLIC TAN----------------#
 def test_tanh_results():
@@ -339,8 +327,6 @@ def test_tanh_types():
 		ef.tanh('x')
 	with pytest.raises(TypeError):
 		ef.tanh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.tanh({1: 'x'})
 
 
 # ------------HYPERBOLIC ARC SINE----------------#
@@ -378,8 +364,6 @@ def test_arcsinh_types():
 		ef.arcsinh('x')
 	with pytest.raises(TypeError):
 		ef.arcsinh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.arcsinh({1: 'x'})
 
 # ------------HYPERBOLIC ARC COSINE----------------#
 
@@ -418,8 +402,6 @@ def test_arccosh_types():
 		ef.arccosh('x')
 	with pytest.raises(TypeError):
 		ef.arccosh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.arccosh({1: 'x'})
 
 # ------------HYPERBOLIC ARC TANGENT----------------#
 
@@ -464,8 +446,6 @@ def test_arctanh_types():
 		ef.arctanh('x')
 	with pytest.raises(TypeError):
 		ef.arctanh("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.arctanh({1: 'x'})
 
 # ---------------EXPONENTIAL----------------#
 
@@ -501,8 +481,6 @@ def test_exp_types():
 		ef.exp('x')
 	with pytest.raises(TypeError):
 		ef.exp("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.exp({1: 'x'})
 
 # ---------------LOG----------------#
 def test_log_results():
@@ -543,8 +521,6 @@ def test_log_types():
 		ef.log('x')
 	with pytest.raises(TypeError):
 		ef.log("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.log({1: 'x'})
 
 
 # ---------------LOG10----------------#
@@ -586,8 +562,6 @@ def test_log10_types():
 		ef.log10('x')
 	with pytest.raises(TypeError):
 		ef.log10("1234")
-	with pytest.raises(TypeError and AttributeError):
-		ef.log10({1: 'x'})
 
 # ---------------SQUARE ROOT----------------#
 
@@ -628,5 +602,3 @@ def test_sqrt_types():
 		ef.sqrt('x')
 	with pytest.raises(TypeError):
 		ef.sqrt("1234")
-	with pytest.raises(AttributeError and TypeError):
-		ef.sqrt({1: 'x'})
