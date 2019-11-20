@@ -102,7 +102,6 @@ We know from above that automatic differentiation computes the derivative as the
 ## Importing
 
 ```python
-import numpy as np
 from ADPYNE.AutoDiff import AutoDiff
 import ADPYNE.elemFunctions
 ```
