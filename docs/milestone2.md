@@ -62,34 +62,49 @@ Automatic Differentiation moves forward through this graph (but does not necessa
 
 The trace table above shows us how to manually perform the forward mode of automatic differentiation for scalar functions of a single variable; however, during practical application we will need to be able to handle systems of equations (*f* as a vector), which will require differentiation of a vector function of multiple variables. An important element of this process is the Jacobian matrix, which contains the function’s partial derivatives.
 
-![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/jacobian.gif)
+![Jacobian](images/jacobian.gif)
 
 We know from above that automatic differentiation computes the derivative as the dot product of the gradient and the seed vector, written as:
 
-![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/product_gradient_seed.gif)
+![gradient seed project](images/product_gradient_seed.gif)
 
  Considering the Jacobian form, what forward mode really computes is ![](/home/pau/IACS/cs207/cs207-FinalProject/docs/images/jp.gif). Beyond this, we can choose the value of the seed vectors {*p*<sub>1</sub>, ..., *p*<sub>*n*</sub>} where *p*<sub>i</sub> ∈  ℝ<sup>*n*</sup> to form the entirety or part of the Jacobian, depending on our applications.
 
 # How to Use AD-PYNE
 
-For an interactive guide on how to use **AD-PYNE**, please see the Jupyter notebook **HowToGuide.ipynb** in `/docs`. 
+## Installing
+
+### Requirements
+
+1. Ensure you can run Python from the command line. 
+   - You can check this by running: `python --version`
+2. Ensure you can run  pip form the command line. 
+   - You can check this by running: `pip --version`
+
+### Install the package
+
+1. Using virtual environment
+
+   - Create an environment with the command: `conda create --name env_name python`
+   - Activating the environment: `conda activate env_name`
+   - You can get out of the environment (deactivate it) by typing: `conda deactivate`
+
+2. Install the package from PyPi and dependencies
+
+   - Type  `pip install -i https://test.pypi.org/simple/ ADPYNE-207`
+
+   - Type `pip install numpy`
+
+   - Type `pip install pytest`
+
+     
 
 ## Importing
 
-(Final Version)
-
 ```python
 import numpy as np
-from AD-PYNE.AutoDiff import AutoDiff
-import AD-PYNE.elemFunctions
-```
-
-(Current Version / No package yet.)
-
-```python
-import numpy as np
-from AutoDiff import AutoDiff
-import elemFunctions as ef
+from ADPYNE.AutoDiff import AutoDiff
+import ADPYNE.elemFunctions
 ```
 
 ## Calculating Derivatives using Forward Mode
@@ -253,15 +268,17 @@ Jacobian:  [[3.47611614]]
 ## Directory Structure 
 
 
-	AD-PYNE/
+	ADPYNE/
 	
-	    AD-PYNE/
+	    ADPYNE/
 	
 		__init__.py
 	
 		elemFunctions.py
 	
 		AutoDiff.py
+			   	
+		HowToGuide.ipynb
 	
 		tests/
 	
@@ -274,8 +291,6 @@ Jacobian:  [[3.47611614]]
 		    milestone1.md
 	
 		   	milestone2.md
-		   	
-		   	HowToGuide.ipynb
 	
 		README.md
 	
@@ -362,7 +377,6 @@ The core data structures are:
     * `__pos__`
     * `__neg__`
     * `__abs__`
-    * `__invert__`
 * Attributes
   * `val` is the value of the function.
   * `der`is the value of the derivative of the function.
