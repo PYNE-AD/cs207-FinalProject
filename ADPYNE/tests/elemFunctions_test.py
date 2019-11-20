@@ -1,8 +1,6 @@
 import warnings
 import pytest
 import numpy as np
-# from ADPYNE import AutoDiff
-# from ADPYNE import elemFunctions as ef
 from AutoDiff import AutoDiff
 import elemFunctions as ef
 
@@ -145,7 +143,7 @@ def test_arcsin_ad_results():
 	assert f.val == np.array([[0.5235987755982988]])
 	assert f.der == np.array([[2/np.sqrt(1-0.5**2)]])
 	assert f.jacobian == np.array([[1/np.sqrt(1-0.5**2)]])
-	
+
 	# out of bounds - undefined sqrt
 	with pytest.warns(RuntimeWarning):
 		y = AutoDiff(-2, 2)
@@ -161,7 +159,7 @@ def test_arcsin_ad_results():
 		assert f.val == np.array([[1.5707963267948966]])
 		assert np.isinf(f.der[0][0])
 		assert np.isinf(f.jacobian[0][0])
-	
+
 	# zero
 	z = AutoDiff(0, 2)
 	f = ef.arcsin(z)
@@ -198,7 +196,7 @@ def test_arccos_ad_results():
 	assert f.val == np.array([[1.0471975511965976]])
 	assert f.der == np.array([[-2/np.sqrt(1-0.5**2)]])
 	assert f.jacobian == np.array([[-1/np.sqrt(1-0.5**2)]])
-	
+
 	# out of bounds - negative sqrt
 	with pytest.warns(RuntimeWarning):
 		y = AutoDiff(-2, 2)
@@ -206,7 +204,7 @@ def test_arccos_ad_results():
 		assert np.isnan(f.val[0][0])
 		assert np.isnan(f.der[0][0])
 		assert np.isnan(f.jacobian[0][0])
-	
+
 	# out of bounds - divide by 0
 	with pytest.warns(RuntimeWarning):
 		y = AutoDiff(1, 2)
@@ -214,7 +212,7 @@ def test_arccos_ad_results():
 		assert f.val == np.array([[0]])
 		assert np.isneginf(f.der[0][0])
 		assert np.isneginf(f.jacobian[0][0])
-	
+
 	# zero
 	z = AutoDiff(0, 2)
 	f = ef.arccos(z)
@@ -225,14 +223,14 @@ def test_arccos_ad_results():
 def test_arccos_constant_results():
 	a = ef.arccos(0.7)
 	assert a == 0.7953988301841436
-	
+
 	b = ef.arccos(0)
 	assert b == 1.5707963267948966
 
 	with pytest.warns(RuntimeWarning):
 		c = ef.arccos(-5)
 		assert np.isnan(c)
-	
+
 
 def test_arccos_types():
 	with pytest.raises(TypeError):
@@ -287,7 +285,7 @@ def test_arctan_types():
 # ------------HYPERBOLIC SINE----------------#
 def test_sinh_results():
 	X = AutoDiff(0.5, 2)
-	f = ef.sinh(X)   
+	f = ef.sinh(X)
 	assert f.val == 0.5210953054937474
 	assert f.der == 2.2552519304127614
 	assert f.jacobian == 1.1276259652063807
@@ -302,19 +300,19 @@ def test_sinh_types():
 	with pytest.raises(TypeError):
 		ef.sinh("1234")
 	with pytest.raises(TypeError and AttributeError):
-		ef.sinh({1: 'x'})        
+		ef.sinh({1: 'x'})
 
 # ------------HYPERBOLIC COS----------------#
 def test_cosh_results():
 	X = AutoDiff(0.5, 2)
-	f = ef.cosh(X)    
+	f = ef.cosh(X)
 	assert f.val == 1.1276259652063807
 	assert f.der == 1.0421906109874948
 	assert f.jacobian == 0.5210953054937474
-	
+
 def test_cosh_constant_results():
 	a = ef.cosh(0.5)
-	assert a == 1.1276259652063807 
+	assert a == 1.1276259652063807
 
 def test_cosh_types():
 	with pytest.raises(TypeError):
@@ -322,19 +320,19 @@ def test_cosh_types():
 	with pytest.raises(TypeError):
 		ef.cosh("1234")
 	with pytest.raises(TypeError and AttributeError):
-		ef.cosh({1: 'x'})       
-		
+		ef.cosh({1: 'x'})
+
 # ------------HYPERBOLIC TAN----------------#
 def test_tanh_results():
 	X = AutoDiff(0.5, 2)
-	f = ef.tanh(X)    
+	f = ef.tanh(X)
 	assert f.val == 0.46211715726000974
 	assert f.der == 1.572895465931855
 	assert f.jacobian == 0.7864477329659275
-	
+
 def test_tanh_constant_results():
 	a = ef.tanh(0.5)
-	assert a == 0.46211715726000974 
+	assert a == 0.46211715726000974
 
 def test_tanh_types():
 	with pytest.raises(TypeError):
@@ -342,8 +340,8 @@ def test_tanh_types():
 	with pytest.raises(TypeError):
 		ef.tanh("1234")
 	with pytest.raises(TypeError and AttributeError):
-		ef.tanh({1: 'x'})         
- 
+		ef.tanh({1: 'x'})
+
 
 # ------------HYPERBOLIC ARC SINE----------------#
 
@@ -389,7 +387,7 @@ def test_arccosh_ad_results():
 	# value defined at positive real numbers x >= 1
 	# derivative defined at positive real numbers x > 1
 	x = AutoDiff(1.1, 2)
-	f = ef.arccosh(x)          
+	f = ef.arccosh(x)
 	assert f.val == 0.4435682543851153
 	assert f.der == 2/np.sqrt(1.1**2 - 1)
 	assert f.jacobian == 1/np.sqrt(1.1**2 - 1)
@@ -494,9 +492,9 @@ def test_exp_constant_results():
 	a = ef.exp(0)
 	assert a == 1
 	b = ef.exp(5)
-	assert b == 148.4131591025766	
+	assert b == 148.4131591025766
 	c = ef.exp(-10)
-	assert c == 4.5399929762484854e-05	
+	assert c == 4.5399929762484854e-05
 
 def test_exp_types():
 	with pytest.raises(TypeError):
@@ -511,7 +509,7 @@ def test_log_results():
 	# value defined at positive real numbers x > 0
 	# derivative defined at real numbers x ≠ 0
 	X = AutoDiff(0.5, 2)
-	f = ef.log(X)    
+	f = ef.log(X)
 	assert f.val == -0.6931471805599453
 	assert f.der == 4
 	assert f.jacobian == 2
@@ -529,7 +527,7 @@ def test_log_results():
 		assert np.isnan(f.val)
 		assert f.der == -4
 		assert f.jacobian == -2
-	
+
 def test_log_constant_results():
 	a = ef.log(0.5)
 	assert a == -0.6931471805599453
@@ -538,7 +536,7 @@ def test_log_constant_results():
 		assert np.isneginf(b)
 	with pytest.warns(RuntimeWarning):
 		b = ef.log(-0.5)
-		assert np.isnan(b)	
+		assert np.isnan(b)
 
 def test_log_types():
 	with pytest.raises(TypeError):
@@ -546,7 +544,7 @@ def test_log_types():
 	with pytest.raises(TypeError):
 		ef.log("1234")
 	with pytest.raises(TypeError and AttributeError):
-		ef.log({1: 'x'}) 
+		ef.log({1: 'x'})
 
 
 # ---------------LOG10----------------#
@@ -554,7 +552,7 @@ def test_log10_results():
 	# value defined at positive real numbers x > 0
 	# derivative defined at positive real numbers x > 0
 	X = AutoDiff(0.5, 2)
-	f = ef.log10(X)    
+	f = ef.log10(X)
 	assert f.val == -0.3010299956639812
 	assert f.der == 1.737177927613007
 	assert f.jacobian == 0.8685889638065035
@@ -572,7 +570,7 @@ def test_log10_results():
 		assert np.isnan(f.val)
 		assert f.der == (2/(-0.5*np.log(10)))
 		assert f.jacobian == 1/(-0.5*np.log(10))
-	
+
 def test_log10_constant_results():
 	a = ef.log10(0.5)
 	assert a == -0.3010299956639812
@@ -581,7 +579,7 @@ def test_log10_constant_results():
 		assert np.isinf(b)
 	with pytest.warns(RuntimeWarning):
 		b = ef.log10(-0.5)
-		assert np.isnan(b)	
+		assert np.isnan(b)
 
 def test_log10_types():
 	with pytest.raises(TypeError):
@@ -589,7 +587,7 @@ def test_log10_types():
 	with pytest.raises(TypeError):
 		ef.log10("1234")
 	with pytest.raises(TypeError and AttributeError):
-		ef.log10({1: 'x'}) 
+		ef.log10({1: 'x'})
 
 # ---------------SQUARE ROOT----------------#
 

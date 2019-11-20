@@ -1,17 +1,19 @@
 import warnings
 import pytest
 import numpy as np
-# from ADPYNE import AutoDiff
-# from ADPYNE import elemFunctions as ef
-from ADPYNE.AutoDiff import AutoDiff
-from ADPYNE.elemFunctions import elemFunctions as ef
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+from AutoDiff import AutoDiff
+import elemFunctions as ef
 
 # helper function tests
 
 def test_convertNonArray_array():
     AD = AutoDiff(np.array([[1,2]]),1)
     assert np.all(np.equal(AD.val, np.array([[1,2]])))
-    
+
 
 def test_convertNonArray_num():
     AD = AutoDiff(1,1)
@@ -21,8 +23,8 @@ def test_convertNonArray_num():
 def test_calcJacobian_array():
     AD = AutoDiff(1,2)
     assert np.all(np.equal(AD.jacobian, np.array([[1]])))
-    
-    
+
+
 def test_calcJacobian_array_withJ():
     AD = AutoDiff(1,1,1,0,np.array([[1]]))
     assert np.all(np.equal(AD.jacobian, np.array([[1]])))
