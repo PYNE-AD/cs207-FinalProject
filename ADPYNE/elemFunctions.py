@@ -1,6 +1,6 @@
 import warnings
 import numpy as np
-from AutoDiff import AutoDiff
+from ADPYNE.AutoDiff import AutoDiff
 
 
 #-------------------BASE TRIG FUNCTIONS-------------------#

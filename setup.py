@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ADPYNE-207",
-    version="0.0.5",
+    version="0.0.6",
     author="Group 12 - CS 207",
     author_email="ptoroisaza@g.harvard.edu, nvanderklaauw@g.harvard.edu, emmali@college.harvard.edu, yaoweili@g.harvard.edu",
     description="Automatic Differentiation Package for Python",
