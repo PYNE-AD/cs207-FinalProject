@@ -540,3 +540,38 @@ def sqrt(x):
 			return np.nan
 		else:
 			return np.sqrt(x)
+
+
+
+# log base
+def logbase(x,base):
+	''' Compute any log base of an AutoDiff object and its derivative.
+	
+	INPUTS
+	======
+	x: an AutoDiff object
+	
+	RETURNS
+	=======
+	A new AutoDiff object with calculated value and derivative.
+	
+	EXAMPLES
+	========
+	x = AutoDiff(2, 2)
+	>>> myAutoDiff = logbase(x,7)
+	>>> myAutoDiff.val
+	0.35620719
+	>>> myAutoDiff.der
+	0.51389834
+	>>> myAutoDiff.jacobian
+	0.25694917
+	
+	'''
+	try:
+		new_val = np.log(x.val)/np.log(base)
+		# Derivative not defined when x = 0
+		new_der = (1/(x.val*np.log(base)))*x.der
+		new_jacobian = (1/(x.val*np.log(base)))*x.jacobian
+		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
+	except AttributeError:
+		return np.log(x)/np.log(base)
