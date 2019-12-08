@@ -109,9 +109,9 @@ def test_tan_ad_results():
 	with pytest.warns(RuntimeWarning):
 		h = AutoDiff(np.pi/2, 1.0)
 		f = ef.tan(h)
-		assert np.isnan(f.val[0][0])
-		assert np.isnan(f.der[0][0])
-		assert np.isnan(f.jacobian[0][0])
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
 
 def test_tan_constant_results():
 	a = ef.tan(5)

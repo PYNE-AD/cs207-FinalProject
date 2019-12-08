@@ -147,7 +147,7 @@ def test_sub_constant_vector_results():
 	x = AutoDiff([1, 3], [2, 1], 2, 1)
 	f = x - 3
 	assert np.all(f.val == np.array([[-2, 0]]).T)
-	assert np.all(f.der == np.array([[2, 1], [2, 1]]))
+	assert np.all(f.der == np.array([[2, 0], [1, 0]]))
 	assert np.all(f.jacobian == np.array([[1, 0], [1, 0]]))
 
 # reverse subtraction tests
@@ -295,22 +295,22 @@ def test_rtruediv_constant_results():
 	x = AutoDiff(3, 2)
 	f = 6 / x
 	assert f.val == 2
-	assert f.der == 3
-	assert f.jacobian == 6
+	assert f.der == -4/3
+	assert f.jacobian == -2/3
 	# negative numbers
 	x = AutoDiff(-3, 2)
 	f = 6 / x
 	assert f.val == -2
-	assert f.der == 3
-	assert f.jacobian == 6
+	assert f.der == -4/3
+	assert f.jacobian == -2/3
 
 def test_rtruediv_constant_vector_results():
 	x = AutoDiff([-9, 3], [2, 1], 2, 1)
 	f = 3 / x
-	print(f)
-	assert np.all(f.val == np.array([[-3, 1]]).T)
-	assert np.all(f.der == np.array([[2/3, 0], [1/3, 0]]))
-	assert np.all(f.jacobian == np.array([[1/3, 0], [1/3, 0]]))
+	print(f.der)
+	assert np.all(f.val == np.array([[-1/3, 1]]).T)
+	assert np.all(f.der == np.array([[-3/(2*(-9)**2), 0], [-3/((3)**2), 0]]))
+	assert np.all(f.jacobian == np.array([[-3/((-9)**2), 0], [-3/((3)**2), 0]]))
 
 # power tests
 def test_pow_ad_results():
@@ -430,4 +430,3 @@ def test_vectorize():
 	assert np.all(f.der == np.array([[6, 4, 8], [2, -2, 2], [1, 0, 0], [4, -4, 0]]))
 	assert np.all(f.jacobian == np.array([[3, 2, 4], [1, -1, 1], [0.5, 0, 0], [2, -2, 0]]))
 
-test_rtruediv_constant_vector_results()

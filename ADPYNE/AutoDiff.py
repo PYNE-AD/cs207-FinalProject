@@ -129,9 +129,11 @@ class AutoDiff():
 	def __rtruediv__(self, other):
 		try:
 			# Use quotient rule
-			return AutoDiff(other.val / self.val, (other.der * self.val - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
+			# other/self
+			return AutoDiff(other.val / self.val, (self.val * other.der - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
 		except AttributeError:
-			return AutoDiff(other / self.val, other / self.der, self.n, 0, other / self.jacobian)
+			print('here')
+			return AutoDiff(other / self.val, (self.val * 0 - other * self.der)/(self.val**2), self.n, 0, (self.val * 0 - other * self.jacobian)/(self.val**2))
 
 	def __pow__(self, other):
 		# Convert to float so that negative integers will work
@@ -154,24 +156,15 @@ class AutoDiff():
 
 	# Unary subtration: negation
 	def __neg__(self):
-			# If  AutoDiff of same variable, values and derivatives should both just add
+		# If  AutoDiff of same variable, values and derivatives should both just add
 		return AutoDiff(self.val * -1, self.der * -1, self.n, 0, self.jacobian * -1)
-		# except AttributeError:
-		# 	# If constant, just do regular negation
-		# 	return self * -1
 
 	def __abs__(self):
-		# try 
 		return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val)),
 				self.n, 0, ((self.val * self.jacobian) / abs(self.val)))
-		# except AttributeError:
-		# 	return abs(self)
 
 	def __invert__(self):
-		# try
-			return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
-		# except AttributeError:
-		# 	return ~self
+		return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
 
 	def __eq__(self, other):
 		try:
