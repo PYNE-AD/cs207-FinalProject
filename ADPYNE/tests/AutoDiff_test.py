@@ -32,8 +32,9 @@ def test_calcJacobian_vector():
 	AD = AutoDiff(3, np.array([[1, 2]]).T, n=2, k=2)
 	assert np.all(np.equal(AD.jacobian, np.array([[0, 1]])))
 
-def test_calcDerivative_():
-	return False
+def test_calcDerivative():
+	AD = AutoDiff(4, 2, n=4, k=3)
+	assert np.all(np.equal(AD.der, np.array([[0, 0, 2, 0]])))
 
 # addition tests
 def test_add_ad_results():
@@ -147,7 +148,7 @@ def test_sub_constant_vector_results():
 	x = AutoDiff([1, 3], [2, 1], 2, 1)
 	f = x - 3
 	assert np.all(f.val == np.array([[-2, 0]]).T)
-	assert np.all(f.der == np.array([[2, 1], [2, 1]]))
+	assert np.all(f.der == np.array([[2, 0], [1, 0]]))
 	assert np.all(f.jacobian == np.array([[1, 0], [1, 0]]))
 
 # reverse subtraction tests
@@ -425,9 +426,9 @@ def test_vectorize():
 	y = AutoDiff(2, np.array([[2]]), n=3, k=2)
 	z = AutoDiff(-1, np.array([[2]]), n=3, k=3)
 	fs = [3*x + 2*y + 4*z, x - y + z, x/2, 2*x - 2*y]
-	f = vectorize(fs, 1, 3)
+	f = vectorize(fs, 3)
 	assert np.all(f.val == np.array([[9],[0],[1.5],[2]]))
 	assert np.all(f.der == np.array([[6, 4, 8], [2, -2, 2], [1, 0, 0], [4, -4, 0]]))
 	assert np.all(f.jacobian == np.array([[3, 2, 4], [1, -1, 1], [0.5, 0, 0], [2, -2, 0]]))
 
-test_rtruediv_constant_vector_results()
+test_calcDerivative()
