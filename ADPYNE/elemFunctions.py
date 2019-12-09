@@ -36,9 +36,12 @@ def sin(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.sin(x.real), x.dual * np.cos(x.real))
+			return Dual(np.sin(x.Real), x.Dual * np.cos(x.Real))
 		except AttributeError:
-			return np.sin(x)
+			try:
+				return Dual(sin(x.Real), x.Dual * cos(x.Real))
+			except AttributeError:
+				return np.sin(x)
 
 # Cosine function
 def cos(x):
@@ -70,7 +73,13 @@ def cos(x):
 		new_jacobian = -1.0 * np.sin(x.val) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.cos(x)
+		try:
+			return Dual(np.cos(x.Real), x.Dual * -np.sin(x.Real))
+		except AttributeError:
+			try:
+				return Dual(cos(x.Real), x.Dual * -sin(x.Real))
+			except AttributeError:
+				return np.cos(x)
 
 # Tangent function
 def tan(x):
@@ -110,210 +119,225 @@ def tan(x):
 			new_jacobian = x.jacobian / (np.cos(x.val)**2.0)
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		if x%(np.pi/2)==0 and x%np.pi!=0:
-			warnings.warn('Undefined at value', RuntimeWarning)
-			return np.nan
-		else:
-			return np.tan(x)
-
-
+		try:
+			return Dual(np.tan(x.Real), x.Dual / (np.cos(x.Real))**2)
+		except AttributeError:
+			try:
+				# Not working
+				x.Dual
+				# return Dual(tan(x.Real), x.Dual / (cos(x.Real))**2)
+				return sin(x)/cos(x)
+			except AttributeError:
+				if x%(np.pi/2)==0 and x%np.pi!=0:
+					warnings.warn('Undefined at value', RuntimeWarning)
+					return np.nan
+				else:
+					return np.tan(x)
 
 #-------------------INVERSE TRIG FUNCTIONS-------------------#
 # arc sin
 def arcsin(X):
-    ''' Compute the arcsin of an AutoDiff object and its derivative.
+	''' Compute the arcsin of an AutoDiff object and its derivative.
 
-        INPUTS
-        ======
-        X: an AutoDiff object or constant
+		INPUTS
+		======
+		X: an AutoDiff object or constant
 
-        RETURNS
-        =======
-        A new AutoDiff object or scalar with calculated value and derivative.
+		RETURNS
+		=======
+		A new AutoDiff object or scalar with calculated value and derivative.
 
-        EXAMPLES
-        ========
-        >>> X = AutoDiff(0.5, 2)
-        >>> arcsinAutoDiff = arcsin(X)
-        >>> arcsinAutoDiff.val
-        0.5235987755982988
-        >>> arcsinAutoDiff.der
-        2.3094010767585034
-    	>>> arcsinAutoDiff.jacobian
-        1.1547005383792517
-        '''
+		EXAMPLES
+		========
+		>>> X = AutoDiff(0.5, 2)
+		>>> arcsinAutoDiff = arcsin(X)
+		>>> arcsinAutoDiff.val
+		0.5235987755982988
+		>>> arcsinAutoDiff.der
+		2.3094010767585034
+		>>> arcsinAutoDiff.jacobian
+		1.1547005383792517
+		'''
 
-    try:
-        # Is another ADT
-        new_val = np.arcsin(X.val) #if (-1 <= X.val and X.val <= 1) else np.nan
-        new_der = (1/np.sqrt(1-X.val**2))*X.der #if (-1 < X.val and X.val < 1) else np.na
-        new_jacobian = (1/np.sqrt(1-X.val**2))*X.jacobian #if (-1 < X.val and X.val < 1) else np.nan
-        
-        return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
+	try:
+		# Is another ADT
+		new_val = np.arcsin(X.val) 
+		new_der = (1/np.sqrt(1-X.val**2))*X.der 
+		new_jacobian = (1/np.sqrt(1-X.val**2))*X.jacobian 
+		
+		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
 
-    except AttributeError:
-		# Constant
-        return_val = np.arcsin(X) #if (-1 <= X and X <= 1) else np.nan
-        return return_val
+	except AttributeError:
+		try:
+			return Dual(np.arcsin(x.Real), X.Dual/np.sqrt(1-X.Real**2))		
+		except AttributeError:
+			try:
+				return 0
+			except AttributeError:
+			# Constant
+				return_val = np.arcsin(X)
+				return return_val
+
+
 
 # arc cosine
 def arccos(X):
-    ''' Compute the arccos of an AutoDiff object and its derivative.
+	''' Compute the arccos of an AutoDiff object and its derivative.
 
-        INPUTS
-        ======
-        X: an AutoDiff object or constant
+		INPUTS
+		======
+		X: an AutoDiff object or constant
 
-        RETURNS
-        =======
-        A new AutoDiff object or scalar with calculated value and derivative.
+		RETURNS
+		=======
+		A new AutoDiff object or scalar with calculated value and derivative.
 
-        EXAMPLES
-        ========
-        >>> X = AutoDiff(0.5, 2)
-        >>> arccosAutoDiff = arccos(X)
-        >>> arccosAutoDiff.val
-        1.0471975511965976
-        >>> arccosAutoDiff.der
-        -2.3094010767585034
-        >>> arccosAutoDiff.jacobian
-        -1.1547005383792517
-        '''
+		EXAMPLES
+		========
+		>>> X = AutoDiff(0.5, 2)
+		>>> arccosAutoDiff = arccos(X)
+		>>> arccosAutoDiff.val
+		1.0471975511965976
+		>>> arccosAutoDiff.der
+		-2.3094010767585034
+		>>> arccosAutoDiff.jacobian
+		-1.1547005383792517
+		'''
 
-    try:
-        # Is another ADT
-        new_val = np.arccos(X.val) #if (-1 <= X.val and X.val <= 1) else np.nan
-        new_der = (-1/np.sqrt(1-X.val**2))*X.der #if (-1 < X.val and X.val < 1) else np.nan
-        new_jacobian = (-1/np.sqrt(1-X.val**2))*X.jacobian #if (-1 < X.val and X.val < 1) else np.nan
+	try:
+		# Is another ADT
+		new_val = np.arccos(X.val) #if (-1 <= X.val and X.val <= 1) else np.nan
+		new_der = (-1/np.sqrt(1-X.val**2))*X.der #if (-1 < X.val and X.val < 1) else np.nan
+		new_jacobian = (-1/np.sqrt(1-X.val**2))*X.jacobian #if (-1 < X.val and X.val < 1) else np.nan
 
-        return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
+		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
 
-    except AttributeError:
-        # Constant
-        return_val = np.arccos(X) #if (-1 <= X and X <= 1) else np.nan
-        return return_val
+	except AttributeError:
+		# Constant
+		return_val = np.arccos(X) #if (-1 <= X and X <= 1) else np.nan
+		return return_val
 
 # arc tangent
 def arctan(X):
-    ''' Compute the arctan of an AutoDiff object and its derivative.
+	''' Compute the arctan of an AutoDiff object and its derivative.
 
-        INPUTS
-        ======
-        X: an AutoDiff object or constant
+		INPUTS
+		======
+		X: an AutoDiff object or constant
 
-        RETURNS
-        =======
-        A new AutoDiff object or scalar with calculated value and derivative.
+		RETURNS
+		=======
+		A new AutoDiff object or scalar with calculated value and derivative.
 
-        EXAMPLES
-        ========
-        >>> X = AutoDiff(3, 2)
-        >>> arctanAutoDiff = arctan(X)
-        >>> arctanAutoDiff.val
-        1.2490457723982544
-        >>> arctanAutoDiff.der
-        0.2
-        >>> arctanAutoDiff.jacobian
-        0.1	
-        '''
+		EXAMPLES
+		========
+		>>> X = AutoDiff(3, 2)
+		>>> arctanAutoDiff = arctan(X)
+		>>> arctanAutoDiff.val
+		1.2490457723982544
+		>>> arctanAutoDiff.der
+		0.2
+		>>> arctanAutoDiff.jacobian
+		0.1	
+		'''
 
-    try:
-        # Is another ADT
-        new_val = np.arctan(X.val)
-        new_der = (1/(1+X.val**2))*X.der
-        new_jacobian = (1/(1+X.val**2))*X.jacobian
+	try:
+		# Is another ADT
+		new_val = np.arctan(X.val)
+		new_der = (1/(1+X.val**2))*X.der
+		new_jacobian = (1/(1+X.val**2))*X.jacobian
 
-        return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
+		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
 
-    except AttributeError:
-        # Constant
-        return np.arctan(X)
+	except AttributeError:
+		# Constant
+		return np.arctan(X)
 
 
 #-------------------HYPERBOLIC TRIG FUNCTIONS-------------------#
 # hyperbolic sin
 def sinh(X):
-    ''' Compute the sinh of an AutoDiff object and its derivative.
-    INPUTS
-    ======
-    X: an AutoDiff object
-    RETURNS
-    =======
-    A new AutoDiff object with calculated value and derivative.
-    EXAMPLES
-    ========
-    >>> X = AutoDiff(0.5, 2, 1)
-    >>> sinhAutoDiff = sinh(X)
-    >>> sinhAutoDiff.val
-    0.5210953054937474
-    >>> sinhAutoDiff.der
-    2.2552519304127614
-    >>> sinhAutoDiff.jacobian
-    1.1276259652063807
-    '''
-    try:
-        val = np.sinh(X.val)
-        der = np.cosh(X.val)*X.der
-        jacobian = np.cosh(X.val)*X.jacobian
-        return AutoDiff(val, der, X.n, 0, jacobian)
-    except AttributeError:
-        return np.sinh(X)
+	''' Compute the sinh of an AutoDiff object and its derivative.
+	INPUTS
+	======
+	X: an AutoDiff object
+	RETURNS
+	=======
+	A new AutoDiff object with calculated value and derivative.
+	EXAMPLES
+	========
+	>>> X = AutoDiff(0.5, 2, 1)
+	>>> sinhAutoDiff = sinh(X)
+	>>> sinhAutoDiff.val
+	0.5210953054937474
+	>>> sinhAutoDiff.der
+	2.2552519304127614
+	>>> sinhAutoDiff.jacobian
+	1.1276259652063807
+	'''
+	try:
+		val = np.sinh(X.val)
+		der = np.cosh(X.val)*X.der
+		jacobian = np.cosh(X.val)*X.jacobian
+		return AutoDiff(val, der, X.n, 0, jacobian)
+	except AttributeError:
+		return np.sinh(X)
 
 # hyperbolic cos
 def cosh(X):
-    ''' Compute the cosh of an AutoDiff object and its derivative.
-    INPUTS
-    ======
-    X: an AutoDiff object
-    RETURNS
-    =======
-    A new AutoDiff object with calculated value and derivative.
-    EXAMPLES
-    ========
-    >>> X = AutoDiff(0.5, 2, 1)
-    >>> coshAutoDiff = cosh(X)
-    >>> coshAutoDiff.val
-    1.1276259652063807
-    >>> coshAutoDiff.der
-    1.0421906109874948
-    >>> coshAutoDiff.jacobian
-    0.5210953054937474
-    '''
-    try:
-        val = np.cosh(X.val)
-        der = np.sinh(X.val)*X.der
-        jacobian = np.sinh(X.val)*X.jacobian
-        return AutoDiff(val, der, X.n, 0, jacobian)
-    except AttributeError:
-        return np.cosh(X)
+	''' Compute the cosh of an AutoDiff object and its derivative.
+	INPUTS
+	======
+	X: an AutoDiff object
+	RETURNS
+	=======
+	A new AutoDiff object with calculated value and derivative.
+	EXAMPLES
+	========
+	>>> X = AutoDiff(0.5, 2, 1)
+	>>> coshAutoDiff = cosh(X)
+	>>> coshAutoDiff.val
+	1.1276259652063807
+	>>> coshAutoDiff.der
+	1.0421906109874948
+	>>> coshAutoDiff.jacobian
+	0.5210953054937474
+	'''
+	try:
+		val = np.cosh(X.val)
+		der = np.sinh(X.val)*X.der
+		jacobian = np.sinh(X.val)*X.jacobian
+		return AutoDiff(val, der, X.n, 0, jacobian)
+	except AttributeError:
+		return np.cosh(X)
 
 # hyperbolic tan
 def tanh(X):
-    ''' Compute the tanh of an AutoDiff object and its derivative.
-    INPUTS
-    ======
-    X: an AutoDiff object
-    RETURNS
-    =======
-    A new AutoDiff object with calculated value and derivative.
-    EXAMPLES
-    ========
-    >>> X = AutoDiff(0.5, 2, 1)
-    >>> tanhAutoDiff = tanh(X)
-    >>> tanhAutoDiff.val
-    0.46211715726000974
-    >>> tanhAutoDiff.der
-    1.572895465931855
-    >>>tanhAutoDiff.jacobian
-    0.7864477329659275
-    '''
-    try:
-        val = np.tanh(X.val)
-        der = 1/(np.cosh(X.val)**2)*X.der
-        jacobian = 1/(np.cosh(X.val)**2)*X.jacobian
-        return AutoDiff(val, der, X.n, 0, jacobian)
-    except AttributeError:
-        return np.tanh(X)
+	''' Compute the tanh of an AutoDiff object and its derivative.
+	INPUTS
+	======
+	X: an AutoDiff object
+	RETURNS
+	=======
+	A new AutoDiff object with calculated value and derivative.
+	EXAMPLES
+	========
+	>>> X = AutoDiff(0.5, 2, 1)
+	>>> tanhAutoDiff = tanh(X)
+	>>> tanhAutoDiff.val
+	0.46211715726000974
+	>>> tanhAutoDiff.der
+	1.572895465931855
+	>>>tanhAutoDiff.jacobian
+	0.7864477329659275
+	'''
+	try:
+		val = np.tanh(X.val)
+		der = 1/(np.cosh(X.val)**2)*X.der
+		jacobian = 1/(np.cosh(X.val)**2)*X.jacobian
+		return AutoDiff(val, der, X.n, 0, jacobian)
+	except AttributeError:
+		return np.tanh(X)
 
 #-------------------ARC HYPERBOLIC TRIG FUNCTIONS-------------------#
 # hyperbolic arcsin
@@ -492,14 +516,14 @@ def log10(x):
 	
 	EXAMPLES
 	========
-    >>> X = AutoDiff(0.5, 2, 1)
-    >>> myAutoDiff = log(X)
-    >>> myAutoDiff.val
-    -0.3010299956639812
-    >>> myAutoDiff.der
-    1.737177927613007
-    >>>myAutoDiff.jacobian
-    0.8685889638065035
+	>>> X = AutoDiff(0.5, 2, 1)
+	>>> myAutoDiff = log(X)
+	>>> myAutoDiff.val
+	-0.3010299956639812
+	>>> myAutoDiff.der
+	1.737177927613007
+	>>>myAutoDiff.jacobian
+	0.8685889638065035
 	
 	'''
 	try:
