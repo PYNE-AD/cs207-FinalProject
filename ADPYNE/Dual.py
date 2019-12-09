@@ -5,7 +5,7 @@ class Dual():
 		self.coefficients = []
 
 	def makeHighestOrder(self, order):
-		theLongdual = self._createNestedduals(self.Real, self.Dual, order)
+		theLongdual = self._createNestedduals(self.Real, self.Dual, order)**1
 		return theLongdual
 
 	def _createNestedduals(self, value, dual, order):
@@ -13,12 +13,6 @@ class Dual():
 			return Dual(value)
 		else:
 			return Dual(self._createNestedduals(value, dual, order - 1), dual)
-
-	def _getReal(self, order):
-		theReal = self.Real
-		for i in range(order - 1):
-			theReal = theReal.Real
-		print("theReal: ", theReal)
 
 	def buildCoefficients(self, n):
 		coeffs = []
@@ -72,7 +66,7 @@ class Dual():
 		try:
 			return Dual(self.Real - other.Real, self.Dual - other.Dual)
 		except AttributeError:
-			return Dual(other - self.Real, self.Dual)
+			return Dual(other - self.Real, -1 * self.Dual)
 
 	def __mul__(self, other):
 		try:
@@ -94,9 +88,9 @@ class Dual():
 
 	def __rtruediv__(self, other):
 		try:
-			return Dual(other.Real / self.Real, other.Dual / self.Dual)
+			return Dual(other.Real / self.Real, (other.Dual*self.Real - other.Real*self.Dual) / self.Real**2)
 		except AttributeError:
-			return Dual(other / self.Real, self.Dual)
+			return Dual(other / self.Real, -1.0*((other*self.Dual)/(self.Real**2)))
 
 	def __pow__(self, other):
 		other = float(other) if type(other)==int else other
@@ -113,9 +107,13 @@ class Dual():
 
 	# Unary functions
 	def __neg__(self):
-		return Dual(-1 * self.Real, -1 * self.Dual)
+		try:
+			return Dual(-1.0 * self.Real, -1.0 * self.Dual)
+		except:
+			return -1.0 * self 
 
 	def __abs__(self):
+		# to do
 		return self ** (1/2)
 
 	# Comparison

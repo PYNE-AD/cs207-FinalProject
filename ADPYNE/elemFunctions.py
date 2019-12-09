@@ -166,19 +166,17 @@ def arcsin(X):
 		new_jacobian = (1/np.sqrt(1-X.val**2))*X.jacobian 
 		
 		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
-
 	except AttributeError:
 		try:
-			return Dual(np.arcsin(x.Real), X.Dual/np.sqrt(1-X.Real**2))		
+			return Dual(np.arcsin(X.Real), X.Dual/np.sqrt(1-X.Real**2))
 		except AttributeError:
 			try:
-				return 0
+				# return Dual(arcsin(X.Real), X.Dual/sqrt(1-X.Real**2))
+				return Dual(arcsin(X.Real), (X.Dual*(1-X.Real**2)**-0.5))
 			except AttributeError:
 			# Constant
 				return_val = np.arcsin(X)
 				return return_val
-
-
 
 # arc cosine
 def arccos(X):
@@ -211,11 +209,16 @@ def arccos(X):
 		new_jacobian = (-1/np.sqrt(1-X.val**2))*X.jacobian #if (-1 < X.val and X.val < 1) else np.nan
 
 		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
-
 	except AttributeError:
-		# Constant
-		return_val = np.arccos(X) #if (-1 <= X and X <= 1) else np.nan
-		return return_val
+		try:
+			return Dual(np.arccos(X.Real), -X.Dual/np.sqrt(1-X.Real**2))		
+		except AttributeError:
+			try:
+				return Dual(arccos(X.Real), -X.Dual/sqrt(1-X.Real**2))
+			except AttributeError:
+			# Constant
+				return_val = np.arccos(X)
+				return return_val
 
 # arc tangent
 def arctan(X):
@@ -248,11 +251,16 @@ def arctan(X):
 		new_jacobian = (1/(1+X.val**2))*X.jacobian
 
 		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
-
 	except AttributeError:
-		# Constant
-		return np.arctan(X)
-
+		try:
+			return Dual(np.arctan(X.Real), X.Dual/(1+X.Real**2))		
+		except AttributeError:
+			try:
+				return Dual(arctan(X.Real), X.Dual/(1+X.Real**2))
+			except AttributeError:
+			# Constant
+				return_val = np.arctan(X)
+				return return_val
 
 #-------------------HYPERBOLIC TRIG FUNCTIONS-------------------#
 # hyperbolic sin
@@ -281,7 +289,15 @@ def sinh(X):
 		jacobian = np.cosh(X.val)*X.jacobian
 		return AutoDiff(val, der, X.n, 0, jacobian)
 	except AttributeError:
-		return np.sinh(X)
+		try:
+			return Dual(np.sinh(X.Real), X.Dual*np.cosh(X.Real))		
+		except AttributeError:
+			try:
+				return Dual(sinh(X.Real), X.Dual*cosh(X.Real))
+			except AttributeError:
+			# Constant
+				return_val = np.sinh(X)
+				return return_val
 
 # hyperbolic cos
 def cosh(X):
@@ -309,7 +325,15 @@ def cosh(X):
 		jacobian = np.sinh(X.val)*X.jacobian
 		return AutoDiff(val, der, X.n, 0, jacobian)
 	except AttributeError:
-		return np.cosh(X)
+		try:
+			return Dual(np.cosh(X.Real), X.Dual*np.sinh(X.Real))		
+		except AttributeError:
+			try:
+				return Dual(cosh(X.Real), X.Dual*sinh(X.Real))
+			except AttributeError:
+			# Constant
+				return_val = np.cosh(X)
+				return return_val
 
 # hyperbolic tan
 def tanh(X):
@@ -337,7 +361,15 @@ def tanh(X):
 		jacobian = 1/(np.cosh(X.val)**2)*X.jacobian
 		return AutoDiff(val, der, X.n, 0, jacobian)
 	except AttributeError:
-		return np.tanh(X)
+		try:
+			return Dual(np.tanh(X.Real), X.Dual/(np.cosh(X.Real)**2))		
+		except AttributeError:
+			try:
+				return sinh(X)/cosh(X)
+			except AttributeError:
+			# Constant
+				return_val = np.cosh(X)
+				return return_val
 
 #-------------------ARC HYPERBOLIC TRIG FUNCTIONS-------------------#
 # hyperbolic arcsin
@@ -370,7 +402,15 @@ def arcsinh(x):
 		new_jacobian = ((1)/np.sqrt(x.val**2 + 1))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.arcsinh(x)
+		try:
+			return Dual(np.arcsinh(x.Real), x.Dual/np.sqrt((x.Real**2)+1))		
+		except AttributeError:
+			try:
+				return Dual(arcsinh(x.Real), (x.Dual*(1+x.Real**2)**-0.5))
+			except AttributeError:
+			# Constant
+				return_val = np.arcsinh(x)
+				return return_val
 
 # hyperbolic arc cosine
 def arccosh(x):
@@ -403,7 +443,15 @@ def arccosh(x):
 		new_jacobian = ((1)/np.sqrt(x.val**2 - 1))*x.jacobian  # if x.val > 1 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.arccosh(x)
+		try:
+			return Dual(np.arccosh(x.Real), x.Dual/np.sqrt((x.Real**2)-1))		
+		except AttributeError:
+			try:
+				return Dual(arccosh(x.Real), (x.Dual*((x.Real**2)-1)**-0.5))
+			except AttributeError:
+			# Constant
+				return_val = np.arccosh(x)
+				return return_val
 
 # hyperbolic arc tangent
 def arctanh(x):
@@ -435,7 +483,15 @@ def arctanh(x):
 		new_jacobian = ((1)/(1-x.val**2))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.arctanh(x)
+		try:
+			return Dual(np.arctanh(x.Real), x.Dual/(1-x.Real**2))		
+		except AttributeError:
+			try:
+				return Dual(arctanh(x.Real), x.Dual/(1-x.Real**2))
+			except AttributeError:
+			# Constant
+				return_val = np.arctanh(x)
+				return return_val
 
 #--------------------------EXPONENT FAMILY----------------------------#
 #Exponential
@@ -467,7 +523,15 @@ def exp(x):
 		new_jacobian = np.exp(x.val) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.exp(x)
+		try:
+			return Dual(np.exp(x.Real), x.Dual*np.exp(x.Real))		
+		except AttributeError:
+			try:
+				return Dual(exp(x.Real), x.Dual*exp(x.Real))
+			except AttributeError:
+			# Constant
+				return_val = np.exp(x)
+				return return_val
 
 # natural log
 def log(x):
@@ -500,7 +564,15 @@ def log(x):
 		new_jacobian = (1/(x.val*np.sum(1)))*x.jacobian # if x.val != 0 else None
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.log(x)
+		try:
+			return Dual(np.log(x.Real), x.Dual/x.Real)		
+		except AttributeError:
+			try:
+				return Dual(log(x.Real), x.Dual/x.Real)
+			except AttributeError:
+			# Constant
+				return_val = np.log(x)
+				return return_val
 
 # log base 10
 def log10(x):
@@ -533,7 +605,15 @@ def log10(x):
 		new_jacobian = (1/(x.val*np.log(10)))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.log10(x)
+		try:
+			return Dual(np.log(x.Real)/np.log(10), x.Dual/(x.Real*np.log(10)))		
+		except AttributeError:
+			try:
+				return Dual(log(x.Real)/np.log(10), x.Dual/(x.Real*(np.log(10))))
+			except AttributeError:
+			# Constant
+				return_val = np.log(x)/np.log(10)
+				return return_val
 
 # Square Root
 def sqrt(x):
@@ -563,8 +643,54 @@ def sqrt(x):
 		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		if x < 0.0:
-			warnings.warn('Undefined at value', RuntimeWarning)
-			return np.nan
-		else:
-			return np.sqrt(x)
+		try:
+			return Dual(np.sqrt(x.Real), 0.5 * (x.Real**(-0.5)) * x.Dual)
+		except AttributeError:
+			try:
+				return Dual(sqrt(x.Real), 0.5 * (x.Real**(-0.5)) * x.Dual)
+			except AttributeError:
+				if x < 0.0:
+					warnings.warn('Undefined at value', RuntimeWarning)
+					return np.nan
+				else:
+					return np.sqrt(x)
+		
+def logbase(x,base):
+	''' Compute any log base of an AutoDiff object and its derivative.
+	
+	INPUTS
+	======
+	x: an AutoDiff object
+	
+	RETURNS
+	=======
+	A new AutoDiff object with calculated value and derivative.
+	
+	EXAMPLES
+	========
+	x = AutoDiff(2, 2)
+	>>> myAutoDiff = logbase(x,7)
+	>>> myAutoDiff.val
+	0.35620719
+	>>> myAutoDiff.der
+	0.51389834
+	>>> myAutoDiff.jacobian
+	0.25694917
+	
+	'''
+	try:
+		new_val = np.log(x.val)/np.log(base)
+		# Derivative not defined when x = 0
+		new_der = (1/(x.val*np.log(base)))*x.der
+		new_jacobian = (1/(x.val*np.log(base)))*x.jacobian
+		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
+	except AttributeError:
+		try:
+			return Dual(np.log(x.Real)/np.log(base), x.Dual/(x.Real*np.log(base)))		
+		except AttributeError:
+			try:
+				return Dual(log(x.Real)/np.log(base), x.Dual/(x.Real*(np.log(base))))
+			except AttributeError:
+			# Constant
+				return_val = np.log(x)/np.log(base)
+				return return_val
