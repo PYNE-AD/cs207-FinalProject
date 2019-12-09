@@ -1,12 +1,13 @@
 import warnings
 import numpy as np
 from ADPYNE.AutoDiff import AutoDiff
-
+from ADPYNE.Dual import Dual
 
 #-------------------BASE TRIG FUNCTIONS-------------------#
 # Sine function
 def sin(x):
 	''' Compute the sine of an AutoDiff object and its derivative.
+		Compute the sine of Dual Number
 
 	INPUTS
 	======
@@ -34,7 +35,10 @@ def sin(x):
 		new_jacobian = np.cos(x.val) * x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
-		return np.sin(x)
+		try:
+			return Dual(np.sin(x.real), x.dual * np.cos(x.real))
+		except AttributeError:
+			return np.sin(x)
 
 # Cosine function
 def cos(x):
