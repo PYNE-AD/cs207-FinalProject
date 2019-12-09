@@ -2,7 +2,7 @@ import numpy as np
 
 class AutoDiff():
 	'''
-	An auto-differentiation object for scalar functions
+	An auto-differentiation object for scalar and vector functions
 	'''
 
 	def __init__(self, eval_value, der_value, n=1, k=1, jacobian_value = np.array([[None]])):
@@ -30,17 +30,24 @@ class AutoDiff():
 		1
 		'''
 		# Convert int or float to array
-		self.val = self._convertNonArray(eval_value)
-		self.der = self._convertNonArray(der_value)*(self.val**0.0)
-		self.n = n
+		self.val = self._convertNonArray(eval_value, k)
 		self.jacobian = self._calcJacobian(k, n, jacobian_value)
+		self.der = self._calcDerivative(der_value, k)
+		self.n = n
 
-	def _convertNonArray(self, value):
-		try:
-			value.shape
+	def _convertNonArray(self, value, k):
+		# try:
+		# 	value.shape
+		# 	return value
+		# except:
+		# 	return np.array([[value]])
+		if k != 0:
+			try:
+				return np.array(value).reshape(len(value), 1)
+			except:
+				return np.array([[value]])
+		else:
 			return value
-		except:
-			return np.array([[value]])
 
 	def _calcJacobian(self, k, n, jacobian_value):
 		if np.all(np.equal(jacobian_value, None)):
@@ -50,8 +57,21 @@ class AutoDiff():
 				seed[:, k-1] = 1
 				return seed
 		else:
-			return jacobian_value*self.val**0.0
+			return jacobian_value
 
+	def _calcDerivative(self, der_value, k):
+		if k != 0:
+			jacobian = (np.array([self.jacobian[0]]))
+			der = self._convertNonArray(der_value, k)
+			return np.dot(der, jacobian)
+		else:
+			return self._convertNonArray(der_value, k)
+
+	def __str__(self):
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
+
+	def __repr__(self):
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
 
 	def __add__(self, other):
 		try:
@@ -109,9 +129,10 @@ class AutoDiff():
 	def __rtruediv__(self, other):
 		try:
 			# Use quotient rule
-			return AutoDiff(other.val / self.val, (other.der * self.val - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
+			# other/self
+			return AutoDiff(other.val / self.val, (self.val * other.der - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
 		except AttributeError:
-			return AutoDiff(other / self.val, other / self.der, self.n, 0, other / self.jacobian)
+			return AutoDiff(other / self.val, (self.val * 0 - other * self.der)/(self.val**2), self.n, 0, (self.val * 0 - other * self.jacobian)/(self.val**2))
 
 	def __pow__(self, other):
 		# Convert to float so that negative integers will work
@@ -134,22 +155,77 @@ class AutoDiff():
 
 	# Unary subtration: negation
 	def __neg__(self):
-		try:
-			# If  AutoDiff of same variable, values and derivatives should both just add
-			return AutoDiff(self.val * -1, self.der * -1, self.n, 0, self.jacobian * -1)
-		except AttributeError:
-			# If constant, just do regular negation
-			return self * -1
+		# If  AutoDiff of same variable, values and derivatives should both just add
+		return AutoDiff(self.val * -1, self.der * -1, self.n, 0, self.jacobian * -1)
 
 	def __abs__(self):
-		try:
-			return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val)),
+		return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val)),
 				self.n, 0, ((self.val * self.jacobian) / abs(self.val)))
-		except AttributeError:
-			return abs(self)
 
 	def __invert__(self):
+		return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
+
+	def __eq__(self, other):
 		try:
-			return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
+				return True
+			else:
+				return False
 		except AttributeError:
-			return ~self
+			return False
+
+	def __ne__(self, other):
+		try:
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
+				return False
+			else:
+				return True
+		except AttributeError:
+			return True
+
+def vectorize(ad_functions, n_vector, n_inputs):
+	'''
+	INPUTS
+	======
+	ad_functions: 	a list or row vector of AutoDiff objects
+	n_inputs:		number of input variables the final function will use
+
+	RETURNS
+	=======
+	An AutoDiff object of vector functions with calculated value, derivative, and jacobian.
+
+	EXAMPLES
+	========
+    >>> x = AutoDiff(3, np.array([[2, 0, 0]]), n=3, k=1)
+    >>> y = AutoDiff(2, np.array([[0, 2, 0]]), n=3, k=2)
+    >>> z = AutoDiff(-1, np.array([[0, 0, 2]]), n=3, k=3)
+    >>> fs = [3*x + 2*y + 4*z, x - y + z, x/2, 2*x - 2*y]
+    >>> f = vectorize(fs, 3)
+	>>> f.val
+	np.array([[9],[0],[1.5],[2]]
+	>>> f.der
+	np.array([[6, 4, 8], [2, -2, 2], [1, 0, 0], [4, -4, 0]])
+	>>> f.jacobian
+	np.array([[3, 2, 4], [1, -1, 1], [0.5, 0, 0], [2, -2, 0]])
+	'''
+	if n_vector == 1:
+		val = np.zeros([len(ad_functions), n_vector])
+		der = np.zeros([len(ad_functions), n_inputs])
+		jacobian = np.zeros([len(ad_functions), n_inputs])
+		for i, f in enumerate(ad_functions):
+			val[i, :] = f.val
+			der[i, :] = f.der
+			jacobian[i, :] = f.jacobian
+	else:
+		val = np.zeros([len(ad_functions), n_vector])
+		der = np.zeros([n_vector, len(ad_functions), n_inputs])
+		jacobian = np.zeros([n_vector, len(ad_functions), n_inputs])
+		for j in range(n_vector):
+			der_j = der[j]
+			jac_j = jacobian[j]
+			for i, f in enumerate(ad_functions):
+				val[i, :] = f.val.T
+				der_j[i, :] = f.der[j]
+				jac_j[i, :]	= f.jacobian[j]
+
+	return AutoDiff(val, der, n_inputs, 0, jacobian)

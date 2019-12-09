@@ -109,9 +109,9 @@ def test_tan_ad_results():
 	with pytest.warns(RuntimeWarning):
 		h = AutoDiff(np.pi/2, 1.0)
 		f = ef.tan(h)
-		assert np.isnan(f.val[0][0])
-		assert np.isnan(f.der[0][0])
-		assert np.isnan(f.jacobian[0][0])
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
 
 def test_tan_constant_results():
 	a = ef.tan(5)
@@ -438,9 +438,11 @@ def test_arctanh_constant_results():
 	b = ef.arctanh(-0.001)
 	assert b == np.arctanh(-0.001)
 	with pytest.warns(RuntimeWarning):
-		ef.arctanh(1)
+		a = ef.arctanh(-1)
+		assert np.isinf(a)
 	with pytest.warns(RuntimeWarning):
-		ef.arctanh(-10)
+		b = ef.arctanh(10)
+		assert np.isnan(b)
 
 def test_arctanh_types():
 	with pytest.raises(TypeError):
@@ -563,6 +565,81 @@ def test_log10_types():
 		ef.log10('x')
 	with pytest.raises(TypeError):
 		ef.log10("1234")
+
+# ---------------LOGBASE----------------#
+def test_logbase_results():
+	# value defined
+	# 0<base<1 and x>1
+	# base>1 and x>0
+	# base=x, base≠0≠1
+	# derivative defined at positive real numbers x > 0
+	X = AutoDiff(0.5, 2)
+	f = ef.logbase(X,2)
+	assert f.val == np.log(0.5)/np.log(2)
+	assert f.der == np.array([[(1/(0.5*np.log(2)))*2]])
+	assert f.jacobian == np.array([[(1/(0.5*np.log(2)))*1]])
+	# value/der not defined at 0<base<1 and x<1
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(-0.5, 2)
+		f = ef.logbase(Y,0.9)
+		assert np.isnan(f.val)
+		assert f.der == np.array([[(1/(-0.5*np.log(0.9)))*2]])
+		assert f.jacobian == np.array([[(1/(-0.5*np.log(0.9)))*1]])
+	# value/der not defined at base<1 and x>0
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(1, 2)
+		f = ef.logbase(Y,-10)
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
+	# value not defined at base>1 and x<=0
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(-1, 2)
+		f = ef.logbase(Y,10)
+		assert np.isnan(f.val)
+		assert f.der == np.array([[(1/(-1*np.log(10)))*2]])
+		assert f.jacobian == np.array([[(1/(-1*np.log(10)))*1]])
+	# value not defined at x = 0 , where base = 0
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(0, 2)
+		f = ef.logbase(Y,0)
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
+	# value not defined at x = base , where base = 1
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(1, 2)
+		f = ef.logbase(Y,1)
+		assert np.isnan(f.val)
+		assert np.isinf(f.der)
+		assert np.isinf(f.jacobian)
+	# value not defined at x = base , where base = 0
+	with pytest.warns(RuntimeWarning):
+		Y = AutoDiff(0, 2)
+		f = ef.logbase(Y,0)
+		assert np.isnan(f.val)
+		assert np.isnan(f.der)
+		assert np.isnan(f.jacobian)
+
+def test_logbase_constant_results():
+	a = ef.logbase(0.5,2)
+	assert a == np.log(0.5)/np.log(2)
+	with pytest.warns(RuntimeWarning):
+		b = ef.logbase(0,2)
+		assert np.isneginf(b)
+	with pytest.warns(RuntimeWarning):
+		b = ef.logbase(-0.5,2)
+		assert np.isnan(b)
+
+def test_logbase_types():
+	with pytest.raises(TypeError):
+		ef.logbase('x',3)
+	with pytest.raises(TypeError):
+		ef.logbase("1234",3)
+	with pytest.raises(TypeError):
+		ef.logbase(3,"x")
+	with pytest.raises(TypeError):
+		ef.logbase(3,"1234")
 
 # ---------------SQUARE ROOT----------------#
 
