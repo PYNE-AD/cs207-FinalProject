@@ -694,3 +694,34 @@ def logbase(x,base):
 			# Constant
 				return_val = np.log(x)/np.log(base)
 				return return_val
+
+def logistic(x):
+	''' Compute logistic function for AutoDiff or Dual object.
+	
+	INPUTS
+	======
+	x: an AutoDiff object or Dual object
+	
+	RETURNS
+	=======
+	A new AutoDiff or Dual object with calculated value and derivative.
+	
+	
+	'''
+	try:
+		f_l = (1/(1+np.exp(-x.val)))
+		new_val = f_l
+		new_der = (1 - f_l)*f_l*x.der
+		new_jacobian = (1 - f_l)*f_l*x.jacobian
+		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
+	except AttributeError:
+		try:
+			f_l = (1/(1 + np.exp(-x.Real)))
+			return Dual(f_l, (1 - f_l)*f_l*x.Dual)		
+		except AttributeError:
+			try:
+				return Dual(logistic(x.Real), (1 - logistic(x.Real))*logistic(x.Real)*x.Dual)
+			except AttributeError:
+			# Constant
+				return_val = (1/(1+np.exp(-x)))
+				return return_val
