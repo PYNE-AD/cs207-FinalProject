@@ -68,10 +68,10 @@ class AutoDiff():
 			return self._convertNonArray(der_value, k)
 
 	def __str__(self):
-		return "Value: {}, Derivative: {}, Jacobian: {}".format(self.val, self.der, self.jacobian)
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
 
 	def __repr__(self):
-		return "Value: {}, Derivative: {}, Jacobian: {}".format(self.val, self.der, self.jacobian)
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
 
 	def __add__(self, other):
 		try:
@@ -132,7 +132,6 @@ class AutoDiff():
 			# other/self
 			return AutoDiff(other.val / self.val, (self.val * other.der - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
 		except AttributeError:
-			print('here')
 			return AutoDiff(other / self.val, (self.val * 0 - other * self.der)/(self.val**2), self.n, 0, (self.val * 0 - other * self.jacobian)/(self.val**2))
 
 	def __pow__(self, other):
@@ -168,7 +167,7 @@ class AutoDiff():
 
 	def __eq__(self, other):
 		try:
-			if self.val == other.val and self.der == other.der:
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
 				return True
 			else:
 				return False
@@ -177,7 +176,7 @@ class AutoDiff():
 
 	def __ne__(self, other):
 		try:
-			if self.val == other.val and self.der == other.der:
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
 				return False
 			else:
 				return True

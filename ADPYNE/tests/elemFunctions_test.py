@@ -438,9 +438,11 @@ def test_arctanh_constant_results():
 	b = ef.arctanh(-0.001)
 	assert b == np.arctanh(-0.001)
 	with pytest.warns(RuntimeWarning):
-		ef.arctanh(1)
+		a = ef.arctanh(-1)
+		assert np.isinf(a)
 	with pytest.warns(RuntimeWarning):
-		ef.arctanh(-10)
+		b = ef.arctanh(10)
+		assert np.isnan(b)
 
 def test_arctanh_types():
 	with pytest.raises(TypeError):
