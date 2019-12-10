@@ -1,16 +1,48 @@
-import numpy as np
-import ADPYNE.elemFunctions as ef
-
 class Dual():
-	def __init__(self, Real, Dual):
+	def __init__(self, Real, Dual = 1):
 		self.Real = Real
 		self.Dual = Dual
+		self.coefficients = []
+
+	def makeHighestOrder(self, order):
+		theLongdual = self._createNestedduals(self.Real, self.Dual, order)**1
+		return theLongdual
+
+	def _createNestedduals(self, value, dual, order):
+		if order == 1:
+			return Dual(value)
+		else:
+			return Dual(self._createNestedduals(value, dual, order - 1), dual)
+
+	def buildCoefficients(self, n):
+		coeffs = []
+		for i in range(n + 1):
+			theCoeff = self
+			# get duals
+			for j in range(i):
+				theCoeff = theCoeff.Dual
+			# get Reals
+			for k in range(n-i):
+				theCoeff = theCoeff.Real
+			coeffs.append(theCoeff)
+		self.coefficients = coeffs	
 
 	def __str__(self):
-		if self.Dual >= 0:
+		if len(self.coefficients) == 0:
 			return "{} + {}ε".format(self.Real, self.Dual)
 		else:
-			return "{} - {}ε".format(self.Real, (self.Dual * -1))
+			finalString = ""
+			episilon = "ε"
+			for i, coeff in enumerate(self.coefficients):
+				if i == 0:
+					finalString += str(coeff)
+				elif i == 1:
+					theString = " + " + str(coeff) + episilon
+					finalString += theString
+				else:
+					theString = " + " + str(coeff) + episilon + "^" + str(i)
+					finalString += theString 
+			return finalString
 
 	def __add__(self, other):
 		try:
@@ -34,7 +66,8 @@ class Dual():
 		try:
 			return Dual(self.Real - other.Real, self.Dual - other.Dual)
 		except AttributeError:
-			return Dual(other - self.Real, self.Dual)
+			return Dual(other - self.Real, -1 * self.Dual)
+
 
 	def __mul__(self, other):
 		try:
@@ -50,15 +83,15 @@ class Dual():
 
 	def __truediv__(self, other):
 		try:
-			return Dual(self.Real / other.Real, self.Dual / other.Dual)
+			return Dual(self.Real / other.Real, (self.Dual*other.Real - self.Real*other.Dual) / other.Real**2)
 		except AttributeError:
-			return Dual(self.Real / other, (1 / other))
+			return Dual(self.Real / other, (self.Dual / other))
 
 	def __rtruediv__(self, other):
 		try:
-			return Dual(other.Real / self.Real, other.Dual / self.Dual)
+			return Dual(other.Real / self.Real, (other.Dual*self.Real - other.Real*self.Dual) / self.Real**2)
 		except AttributeError:
-			return Dual(other / self.Real, self.Dual)
+			return Dual(other / self.Real, -1.0*((other*self.Dual)/(self.Real**2)))
 
 	def __pow__(self, other):
 		other = float(other) if type(other)==int else other
@@ -75,10 +108,14 @@ class Dual():
 
 	# Unary functions
 	def __neg__(self):
-		return Dual(-1 * self.Real, -1 * self.Dual)
+		try:
+			return Dual(-1.0 * self.Real, -1.0 * self.Dual)
+		except:
+			return -1.0 * self 
 
 	def __abs__(self):
-		return self ** (1/2)
+		return Dual(-1 * self.Real, -1 * self.Dual)
+
 
 	# Comparison
 	def __eq__(self, other):
@@ -98,15 +135,3 @@ class Dual():
 				return True
 		except AttributeError:
 			return True
-
-# x = Dual(3, np.array([1, 0, 0]))
-# y = Dual(2, np.array([0, 1, 0]))
-# x = Dual(3, 1)
-
-# f = 2*x**2
-# print(f)
-
-# f_2 = Dual(f.Dual, 1)
-# print(f_2)
-
-

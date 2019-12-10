@@ -63,7 +63,7 @@ class AutoDiff():
 		if k != 0:
 			jacobian = (np.array([self.jacobian[0]]))
 			der = self._convertNonArray(der_value, k)
-			return np.dot(der, jacobian)
+			return np.dot(der, jacobian) * self.jacobian**0
 		else:
 			return self._convertNonArray(der_value, k)
 
@@ -183,12 +183,13 @@ class AutoDiff():
 		except AttributeError:
 			return True
 
-def vectorize(ad_functions, n_vector, n_inputs):
+def vectorize(ad_functions, n_inputs = 1, n_vectors = 1):
 	'''
 	INPUTS
 	======
 	ad_functions: 	a list or row vector of AutoDiff objects
 	n_inputs:		number of input variables the final function will use
+	n_vectors: 		length of vector for input variables
 
 	RETURNS
 	=======
@@ -208,8 +209,8 @@ def vectorize(ad_functions, n_vector, n_inputs):
 	>>> f.jacobian
 	np.array([[3, 2, 4], [1, -1, 1], [0.5, 0, 0], [2, -2, 0]])
 	'''
-	if n_vector == 1:
-		val = np.zeros([len(ad_functions), n_vector])
+	if n_vectors == 1:
+		val = np.zeros([len(ad_functions), n_vectors])
 		der = np.zeros([len(ad_functions), n_inputs])
 		jacobian = np.zeros([len(ad_functions), n_inputs])
 		for i, f in enumerate(ad_functions):
@@ -217,10 +218,10 @@ def vectorize(ad_functions, n_vector, n_inputs):
 			der[i, :] = f.der
 			jacobian[i, :] = f.jacobian
 	else:
-		val = np.zeros([len(ad_functions), n_vector])
-		der = np.zeros([n_vector, len(ad_functions), n_inputs])
-		jacobian = np.zeros([n_vector, len(ad_functions), n_inputs])
-		for j in range(n_vector):
+		val = np.zeros([len(ad_functions), n_vectors])
+		der = np.zeros([n_vectors, len(ad_functions), n_inputs])
+		jacobian = np.zeros([n_vectors, len(ad_functions), n_inputs])
+		for j in range(n_vectors):
 			der_j = der[j]
 			jac_j = jacobian[j]
 			for i, f in enumerate(ad_functions):
