@@ -552,6 +552,8 @@ def test_log10_results():
 
 def test_log10_constant_results():
 	a = ef.log10(0.5)
+	print(a,"a")
+	print(np.log10(0.5),"b")
 	assert a == np.log10(0.5)
 	with pytest.warns(RuntimeWarning):
 		b = ef.log10(0)
