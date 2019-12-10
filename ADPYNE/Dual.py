@@ -1,3 +1,6 @@
+from numpy import log
+from numpy import all
+
 class Dual():
 	def __init__(self, Real, Dual = 1):
 		self.Real = Real
@@ -25,24 +28,13 @@ class Dual():
 			for k in range(n-i):
 				theCoeff = theCoeff.Real
 			coeffs.append(theCoeff)
-		self.coefficients = coeffs	
+		self.coefficients = coeffs
 
 	def __str__(self):
 		if len(self.coefficients) == 0:
 			return "{} + {}ε".format(self.Real, self.Dual)
 		else:
-			finalString = ""
-			episilon = "ε"
-			for i, coeff in enumerate(self.coefficients):
-				if i == 0:
-					finalString += str(coeff)
-				elif i == 1:
-					theString = " + " + str(coeff) + episilon
-					finalString += theString
-				else:
-					theString = " + " + str(coeff) + episilon + "^" + str(i)
-					finalString += theString 
-			return finalString
+			return "{}".format(self.coefficients)
 
 	def __add__(self, other):
 		try:
@@ -104,23 +96,28 @@ class Dual():
 		try: # need to do
 			return Dual(other.Real ** self.Real, other.Dual ** self.Dual)
 		except AttributeError:
-			return Dual(other ** self.Real, self.Dual * np.log(other) * (other ** self.Real))
+			return Dual(other ** self.Real, self.Dual * log(other) * (other ** self.Real))
 
 	# Unary functions
 	def __neg__(self):
 		try:
 			return Dual(-1.0 * self.Real, -1.0 * self.Dual)
 		except:
-			return -1.0 * self 
+			return -1.0 * self
 
 	def __abs__(self):
-		return Dual(-1 * self.Real, -1 * self.Dual)
+		return Dual(abs(self.Real), self.Dual/abs(self.Real))
 
+	def __pos__(self):
+		try:
+			return Dual(self.Real, self.Dual)
+		except:
+			return self
 
 	# Comparison
 	def __eq__(self, other):
 		try:
-			if self.Dual == other.Dual and self.Real == other.Real:
+			if all(self.Dual == other.Dual) and all(self.Real == other.Real):
 				return True
 			else:
 				return False
@@ -129,7 +126,7 @@ class Dual():
 
 	def __ne__(self, other):
 		try:
-			if self.Dual == other.Dual and self.Real == other.Real:
+			if all(self.Dual == other.Dual) and all(self.Real == other.Real):
 				return False
 			else:
 				return True
