@@ -1,5 +1,4 @@
-from numpy import log
-from numpy import all
+import numpy as np
 
 class Dual():
 	def __init__(self, Real, Dual = 1):
@@ -96,7 +95,7 @@ class Dual():
 		try: # need to do
 			return Dual(other.Real ** self.Real, other.Dual ** self.Dual)
 		except AttributeError:
-			return Dual(other ** self.Real, self.Dual * log(other) * (other ** self.Real))
+			return Dual(other ** self.Real, self.Dual * np.log(other) * (other ** self.Real))
 
 	# Unary functions
 	def __neg__(self):
@@ -117,7 +116,7 @@ class Dual():
 	# Comparison
 	def __eq__(self, other):
 		try:
-			if all(self.Dual == other.Dual) and all(self.Real == other.Real):
+			if np.all(self.Dual == other.Dual) and np.all(self.Real == other.Real):
 				return True
 			else:
 				return False
@@ -126,9 +125,32 @@ class Dual():
 
 	def __ne__(self, other):
 		try:
-			if all(self.Dual == other.Dual) and all(self.Real == other.Real):
+			if np.all(self.Dual == other.Dual) and np.all(self.Real == other.Real):
 				return False
 			else:
 				return True
 		except AttributeError:
 			return True
+
+def vectorizeDual(functions, order):
+	n = len(functions)
+	m = order + 1
+	vector = np.zeros([n, m])
+	for i, f in enumerate(functions):
+   	 f.buildCoefficients(order)
+   	 for j, coeff in enumerate(f.coefficients):
+   		 vector[i,j] = coeff
+
+	# Create a copy of one function
+	f_everything = functions[0]
+	f_everything.coefficients = np.zeros([n, m])
+	for i in range(m):
+   	 f_everything.coefficients[:, i] = vector[:, i]
+
+	return f_everything
+
+
+def makeHessianVars(x,y):
+	xh = x.makeHighestOrder(3)
+	yh = y.makeHighestOrder(3)
+	return xh, yh 
