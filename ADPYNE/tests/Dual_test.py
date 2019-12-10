@@ -5,8 +5,10 @@ import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
-from ADPYNE.Dual import Dual
+from ADPYNE.Dual import Dual, makeHessianVars
 import ADPYNE.elemFunctions as ef
+import ADPYNE.elemFunctions as ef
+from ADPYNE.Hessian import Hessian
 
 # higher order derivative and __str__ test
 def test_higherorderprint():
@@ -427,3 +429,27 @@ def test_neq_vector_results():
 def test_ne_constant():
 	x = Dual(5, 2)
 	assert x != 5
+
+
+def test_hessian():
+	x = Dual(3, np.array([1,0]))
+	y = Dual(1, np.array([0,1]))
+	xh,yh = makeHessianVars(x,y)
+	func = (xh**2)*(ef.exp(yh))
+	f = Hessian(func)
+	assert f.value == (3**2)*np.exp(1)
+	assert np.all(f.firstDer == np.array([2*3*np.exp(1), (3**2)*np.exp(1)]))
+	assert np.all(f.hessian == np.array([[2*np.exp(1), 2*3*np.exp(1)],[2*3*np.exp(1), (3**2)*np.exp(1)]]))
+
+
+def test_hessian2():
+	x = Dual(0.5, np.array([1,0]))
+	y = Dual(0.2, np.array([0,1]))
+	xh,yh = makeHessianVars(x,y)
+	func = ef.arcsin(xh)*ef.log(yh)**(-1)
+	f = Hessian(func)
+	assert f.value == np.arcsin(0.5)/np.log(0.2)
+	fder = np.array([ 1/(np.sqrt(1-0.5**2)*np.log(0.2)), -np.arcsin(0.5)/(0.2*(np.log(0.2)**2)) ])
+	assert np.allclose(f.firstDer,fder)
+	fhess = np.array([[0.5/((1-0.5**2)**(3/2)*np.log(0.2)), -1/(np.sqrt(1-0.5**2)*0.2*(np.log(0.2)**2))],[-1/(np.sqrt(1-0.5**2)*0.2*(np.log(0.2)**2)), 2*np.arcsin(0.5)/((0.2**2)*(np.log(0.2)**3))+ np.arcsin(0.5)/((0.2**2)*(np.log(0.2)**2))]])
+	assert np.allclose(f.hessian,fhess)
