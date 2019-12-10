@@ -321,12 +321,12 @@ def test_pow_ad_results():
 	assert f.jacobian == 4 + np.log(16)
 
 def test_rpow_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 2, 1)
-    y = AutoDiff([2, 1], [1, 3], 2, 2)
-    f = x**y
-    assert np.all(f.val == np.array([[4**2, 3**1]]).T)
-    assert np.all(f.der == np.array([[2*(4**(2-1))*2, (4**2) * np.log(4) * 1], [1*(3**(1-1))*1, (3**1) * np.log(3)*3]]))
-    assert np.all(f.jacobian == np.array([[2*(4**(2-1))*1, (4**2) * np.log(4) * 1], [1*(3**(1-1))*1, (3**1) * np.log(3)*1]]))
+	x = AutoDiff([4, 3], [2, 1], 2, 1)
+	y = AutoDiff([2, 1], [1, 3], 2, 2)
+	f = x**y
+	assert np.all(f.val == np.array([[4**2, 3**1]]).T)
+	assert np.all(f.der == np.array([[2*(4**(2-1))*2, (4**2) * np.log(4) * 1], [1*(3**(1-1))*1, (3**1) * np.log(3)*3]]))
+	assert np.all(f.jacobian == np.array([[2*(4**(2-1))*1, (4**2) * np.log(4) * 1], [1*(3**(1-1))*1, (3**1) * np.log(3)*1]]))
 
 def test_pow_constant_results():
 	# positive numbers
@@ -343,11 +343,11 @@ def test_pow_constant_results():
 	assert f.jacobian == 75
 
 def test_pow_constant_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    f = x**3
-    assert np.all(f.val == np.array([[4**3, 3**3]]).T)
-    assert np.all(f.der == np.array([[3*(4**2)*2], [3*(3**2)*1]]))
-    assert np.all(f.jacobian == np.array([[3*(4**2)*1], [3*(3**2)*1]]))
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	f = x**3
+	assert np.all(f.val == np.array([[4**3, 3**3]]).T)
+	assert np.all(f.der == np.array([[3*(4**2)*2], [3*(3**2)*1]]))
+	assert np.all(f.jacobian == np.array([[3*(4**2)*1], [3*(3**2)*1]]))
 
 # reverse power tests
 def test_rpow_constant_results():
@@ -358,11 +358,11 @@ def test_rpow_constant_results():
 	assert f.jacobian == 243 * np.log(3)
 
 def test_rpow_constant_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    f = 3**x
-    assert np.all(f.val == np.array([[3**(4), 3**3]]).T)
-    assert np.all(f.der == np.array([[(3**(4))*2 * np.log(3)], [(3**(3))*1 * np.log(3)]]))
-    assert np.all(f.jacobian == np.array([[(3**(4))*1 * np.log(3)], [(3**(3))*1 * np.log(3)]]))
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	f = 3**x
+	assert np.all(f.val == np.array([[3**(4), 3**3]]).T)
+	assert np.all(f.der == np.array([[(3**(4))*2 * np.log(3)], [(3**(3))*1 * np.log(3)]]))
+	assert np.all(f.jacobian == np.array([[(3**(4))*1 * np.log(3)], [(3**(3))*1 * np.log(3)]]))
 
 
 # positive tests
@@ -381,16 +381,16 @@ def test_pos_results():
 	assert f.jacobian == 1
 
 def test_pos_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    f = + x
-    assert np.all(f.val == np.array([[4, 3]]).T)
-    assert np.all(f.der == np.array([[2], [1]]))
-    assert np.all(f.jacobian == np.array([[1], [1]]))
-    y = AutoDiff([-4, -3], [2, 1], 1, 1)
-    g = + y
-    assert np.all(g.val == np.array([[-4, -3]]).T)
-    assert np.all(g.der == np.array([[2], [1]]))
-    assert np.all(g.jacobian == np.array([[1], [1]]))
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	f = + x
+	assert np.all(f.val == np.array([[4, 3]]).T)
+	assert np.all(f.der == np.array([[2], [1]]))
+	assert np.all(f.jacobian == np.array([[1], [1]]))
+	y = AutoDiff([-4, -3], [2, 1], 1, 1)
+	g = + y
+	assert np.all(g.val == np.array([[-4, -3]]).T)
+	assert np.all(g.der == np.array([[2], [1]]))
+	assert np.all(g.jacobian == np.array([[1], [1]]))
 
 # negation tests
 def test_neg_results():
@@ -408,16 +408,16 @@ def test_neg_results():
 	assert f.jacobian == -1
 
 def test_neg_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    f = - x
-    assert np.all(f.val == np.array([[-4, -3]]).T)
-    assert np.all(f.der == np.array([[-2], [-1]]))
-    assert np.all(f.jacobian == np.array([[-1], [-1]]))
-    y = AutoDiff([-4, -3], [2, 1], 1, 1)
-    g = - y
-    assert np.all(g.val == np.array([[4, 3]]).T)
-    assert np.all(g.der == np.array([[-2], [-1]]))
-    assert np.all(g.jacobian == np.array([[-1], [-1]]))
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	f = - x
+	assert np.all(f.val == np.array([[-4, -3]]).T)
+	assert np.all(f.der == np.array([[-2], [-1]]))
+	assert np.all(f.jacobian == np.array([[-1], [-1]]))
+	y = AutoDiff([-4, -3], [2, 1], 1, 1)
+	g = - y
+	assert np.all(g.val == np.array([[4, 3]]).T)
+	assert np.all(g.der == np.array([[-2], [-1]]))
+	assert np.all(g.jacobian == np.array([[-1], [-1]]))
 
 def test_neg_constant_results():
 	x = 3
@@ -440,16 +440,16 @@ def test_abs_results():
 	assert f.jacobian == -1
 
 def test_abs_vector_results():
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    f = abs(x)
-    assert np.all(f.val == np.array([[4, 3]]).T)
-    assert np.all(f.der == np.array([[2], [1]]))
-    assert np.all(f.jacobian == np.array([[1], [1]]))
-    y = AutoDiff([-4, -3], [2, 1], 1, 1)
-    g = abs(y)
-    assert np.all(g.val == np.array([[4, 3]]).T)
-    assert np.all(g.der == np.array([[-2], [-1]]))
-    assert np.all(g.jacobian == np.array([[-1], [-1]]))
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	f = abs(x)
+	assert np.all(f.val == np.array([[4, 3]]).T)
+	assert np.all(f.der == np.array([[2], [1]]))
+	assert np.all(f.jacobian == np.array([[1], [1]]))
+	y = AutoDiff([-4, -3], [2, 1], 1, 1)
+	g = abs(y)
+	assert np.all(g.val == np.array([[4, 3]]).T)
+	assert np.all(g.der == np.array([[-2], [-1]]))
+	assert np.all(g.jacobian == np.array([[-1], [-1]]))
 
 def test_abs_constant_results():
 	x = -3
@@ -465,13 +465,13 @@ def test_eq_results():
 	assert (x == z) == False
 
 def test_eq_vector_results():
-    w = AutoDiff([4, 5], [2, 1], 1, 1)
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    y = AutoDiff([4, 3], [2, 1], 1, 1)
-    z = AutoDiff([4, 5], [2, 1], 1, 1)
-    assert np.all(x == y)
-    assert np.all(x==z) == False
-    assert np.all(w==x) == False
+	w = AutoDiff([4, 5], [2, 1], 1, 1)
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	y = AutoDiff([4, 3], [2, 1], 1, 1)
+	z = AutoDiff([4, 5], [2, 1], 1, 1)
+	assert np.all(x == y)
+	assert np.all(x==z) == False
+	assert np.all(w==x) == False
 
 def test_eq_constant():
 	x = AutoDiff(5, 2)
@@ -485,13 +485,13 @@ def test_ne_results():
 	assert (x != y) == False
 
 def test_neq_vector_results():
-    w = AutoDiff([4, 5], [2, 1], 1, 1)
-    x = AutoDiff([4, 3], [2, 1], 1, 1)
-    y = AutoDiff([4, 3], [2, 1], 1, 1)
-    z = AutoDiff([4, 5], [2, 1], 1, 1)
-    assert np.all(x != y) == False
-    assert np.all(x!=z)
-    assert np.all(w!=x)
+	w = AutoDiff([4, 5], [2, 1], 1, 1)
+	x = AutoDiff([4, 3], [2, 1], 1, 1)
+	y = AutoDiff([4, 3], [2, 1], 1, 1)
+	z = AutoDiff([4, 5], [2, 1], 1, 1)
+	assert np.all(x != y) == False
+	assert np.all(x!=z)
+	assert np.all(w!=x)
 
 def test_ne_constant():
 	x = AutoDiff(5, 2)

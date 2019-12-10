@@ -197,11 +197,11 @@ def vectorize(ad_functions, n_inputs = 1, n_vectors = 1):
 
 	EXAMPLES
 	========
-    >>> x = AutoDiff(3, np.array([[2, 0, 0]]), n=3, k=1)
-    >>> y = AutoDiff(2, np.array([[0, 2, 0]]), n=3, k=2)
-    >>> z = AutoDiff(-1, np.array([[0, 0, 2]]), n=3, k=3)
-    >>> fs = [3*x + 2*y + 4*z, x - y + z, x/2, 2*x - 2*y]
-    >>> f = vectorize(fs, 3)
+	>>> x = AutoDiff(3, np.array([[2, 0, 0]]), n=3, k=1)
+	>>> y = AutoDiff(2, np.array([[0, 2, 0]]), n=3, k=2)
+	>>> z = AutoDiff(-1, np.array([[0, 0, 2]]), n=3, k=3)
+	>>> fs = [3*x + 2*y + 4*z, x - y + z, x/2, 2*x - 2*y]
+	>>> f = vectorize(fs, 3)
 	>>> f.val
 	np.array([[9],[0],[1.5],[2]]
 	>>> f.der
