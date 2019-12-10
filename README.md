@@ -34,8 +34,4 @@
 
 2. Install the package from PyPi and dependencies
 
-   - Type  `pip install -i https://test.pypi.org/simple/ ADPYNE-207`
-
-   - Type `pip install numpy`
-
-   - Type `pip install pytest`
+   - Type  `pip install ADPYNE-207`
