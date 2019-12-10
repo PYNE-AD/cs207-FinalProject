@@ -697,6 +697,7 @@ def sqrt(x):
 					return np.sqrt(x)
 
 # log base
+	
 def logbase(x,base):
 	''' Compute any log base of an AutoDiff object and its derivative.
 	
@@ -728,17 +729,14 @@ def logbase(x,base):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.sqrt(x.Real), 0.5 * (x.Real**(-0.5)) * x.Dual)
+			return Dual(np.log(x.Real)/np.log(base), x.Dual/(x.Real*np.log(base)))		
 		except AttributeError:
 			try:
-				return Dual(sqrt(x.Real), 0.5 * (x.Real**(-0.5)) * x.Dual)
+				return Dual(log(x.Real)/np.log(base), x.Dual/(x.Real*(np.log(base))))
 			except AttributeError:
-				if x < 0.0:
-					warnings.warn('Undefined at value', RuntimeWarning)
-					return np.nan
-				else:
-					return np.sqrt(x)
-		
+			# Constant
+				return_val = np.log(x)/np.log(base)
+				return return_val
 
 def logistic(x):
 	''' Compute logistic function for AutoDiff or Dual object.

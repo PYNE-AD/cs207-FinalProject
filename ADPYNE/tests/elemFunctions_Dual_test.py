@@ -652,3 +652,25 @@ def test_sqrt_types():
 		ef.sqrt('x')
 	with pytest.raises(TypeError):
 		ef.sqrt("1234")
+
+
+# ---------------LOGISTIC FUNC----------------#
+
+def test_logistic_ad_results():
+	# Positive reals
+	x = Dual(0.5, 2.0)
+	f = ef.logistic(x)
+	assert f.Real == np.array([[1/(1+np.exp(-0.5))]])
+	assert f.Dual == np.array([[2*np.exp(-0.5)/((1+np.exp(-0.5))**2)]])
+	
+def test_logistic_constant_results():
+	a = ef.logistic(5)
+	assert a == 1/(1+np.exp(-5))
+	b = ef.logistic(0)
+	assert b == 1/(1+np.exp(-0))
+
+def test_logistic_types():
+	with pytest.raises(TypeError):
+		ef.logistic('x')
+	with pytest.raises(TypeError):
+		ef.logistic("1234")
