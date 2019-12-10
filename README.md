@@ -15,7 +15,7 @@
 
 - Emma Li
 
-## Installing
+## Installation
 
 ### Requirements
 
@@ -35,3 +35,4 @@
 2. Install the package from PyPi and dependencies
 
    - Type  `pip install ADPYNE-207`
+
