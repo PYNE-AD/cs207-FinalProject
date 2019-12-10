@@ -107,11 +107,190 @@ To calculate the second derivative, instead of being the “real” value part o
 ```python
 from ADPYNE.AutoDiff import AutoDiff, vectorize
 import ADPYNE.elemFunctions as ef
-from ADPYNE.Dual import Dual, vectorizeDual
+from ADPYNE.Dual import Dual, vectorizeDual, makeHessianVars
+from ADPYNE.Hessian import Hessian
 ```
 ### How To Guide
 
 For the interactive how-to-guide on how to use Forward Mode for automatic differentiation and Dual Mode for higher order derivatives, please see the Jupyter Notebook *HowToGuide.ipynb* in the /docs folder. 
+
+Below are quick examples.
+
+#### Example 1
+
+Evaluate and find the derivative of a function *f* at *x* = 5 with a seed of 2. 
+
+```python
+# Scalar function with single scalar variable
+x = AutoDiff(5, 2)
+f = x**3 - 5*x**-2 + 2*x + 5
+
+print("Value: ", f.val)
+print("Derivative: ", f.der)
+print("Jacobian: ", f.jacobian)
+'''
+OUTPUT
+======
+Value:  [[37.44444444]]
+Derivative:  [[58.74074074]]
+Jacobian:  [[29.37037037]]
+'''
+```
+
+#### Example 2
+
+Evaluate and find the derivative of a function *f* at *x* = [-2, -1, 0, 1, 2] with a seed of 2. 
+
+```python
+x = AutoDiff([-2, -1, 0, 1, 2], 2)
+f = x**3 - 5*x**-2 + 2*x + 5
+print("Value:\n", f.val)
+print("Derivative:\n", f.der)
+print("Jacobian:\n", f.jacobian)
+'''
+OUTPUT
+======
+Value:
+ [[-8.25]
+ [-3.  ]
+ [ -inf]
+ [ 3.  ]
+ [15.75]]
+Derivative:
+ [[ 25.5]
+ [-10. ]
+ [  inf]
+ [ 30. ]
+ [ 30.5]]
+Jacobian:
+ [[12.75]
+ [-5.  ]
+ [  inf]
+ [15.  ]
+ [15.25]]
+'''
+```
+
+#### Example 3
+
+Evaluate and find the partial derivatives of a function *f* at *x* = 3, *y* = -1, *z* = 1 with a seed of 2. The partial derivatives of *x, y, z* are the first, second, and third columns (respectively) of the derivative and Jacobian attributes. 
+
+```python
+x = AutoDiff(3, 2, n=3, k=1)
+y = AutoDiff(-1, 2, n=3, k=2)
+z = AutoDiff(1, 2, n=3, k=3)
+
+f = 3*x**2 + x*(y**2) - 2*z**3
+print("Value:\n", f.val)
+print("Derivative:\n", f.der)
+print("Jacobian:\n", f.jacobian)
+'''
+OUTPUT
+======
+Value:
+ [[28.]]
+Derivative:
+ [[ 38. -12. -12.]]
+Jacobian:
+ [[19. -6. -6.]]
+'''
+```
+
+#### Example 4
+
+Evaluate and find the partial derivatives of a vector function *f* at *x* = 3, *y* = -1, *z* = 1 with a seed of 2. The partial derivatives of *x, y, z* are the first, second, and third columns (respectively) of the derivative and Jacobian attributes. 
+
+```python
+x = AutoDiff(3, 2, n=3, k=1)
+y = AutoDiff(-2, 2, n=3, k=2)
+z = AutoDiff(1, 2, n=3, k=3)
+
+f1 = 3*x**2 + x*y**2 - 2*z**3
+f2 = y*ef.exp(x)
+f3 = ef.cos(x*z) + ef.sin(y/z)
+
+f = vectorize([f1, f2, f3], n_inputs = 3)
+
+print("Value:\n", f.val)
+print("Derivative:\n", f.der)
+print("Jacobian:\n", f.jacobian)
+'''
+OUTPUT
+======
+Value:
+ [[ 37.        ]
+ [-40.17107385]
+ [ -1.89928992]]
+Derivative:
+ [[ 44.         -24.         -12.        ]
+ [-80.34214769  40.17107385   0.        ]
+ [ -0.28224002  -0.83229367  -2.51130739]]
+Jacobian:
+ [[ 22.         -12.          -6.        ]
+ [-40.17107385  20.08553692   0.        ]
+ [ -0.14112001  -0.41614684  -1.2556537 ]]
+'''
+```
+
+#### Example 5
+
+Evaluate and find the first through fourth derivatives of the function *f* at *x* = 3. 
+
+```python
+x = Dual(3)
+x4 = x.makeHighestOrder(4)
+
+f = -5*x4**3
+f.buildCoefficients(4)
+
+print("Value: {}".format(f.coefficients[0]))
+print("First derivative: {}".format(f.coefficients[1]))
+print("Second derivative: {}".format(f.coefficients[2]))
+print("Third derivative: {}".format(f.coefficients[3]))
+print("Fourth derivative: {}".format(f.coefficients[4]))
+'''
+OUTPUT
+======
+Value: -135.0
+First derivative: -135.0
+Second derivative: -90.0
+Third derivative: -30.0
+Fourth derivative: -0.0
+'''
+```
+
+#### Example 6
+
+Evaluate and find the first through fifth derivatives of the vector function *f* at x = 2. 
+
+```python
+x = Dual(2, 1)
+
+x2 = x.makeHighestOrder(5)
+
+f1 = 3*x2**5
+f2 = 2*ef.sin(x2)
+f3 = ef.exp(2*x2)
+
+f = vectorizeDual([f1, f2, f3], 5)
+
+print("Value for f1: {}".format(f.coefficients[0, 0]))
+print("First derivative for f1: {}".format(f.coefficients[0, 1]))
+print("Second derivative for f1: {}".format(f.coefficients[0, 2]))
+print("Third derivative for f1: {}".format(f.coefficients[0, 3]))
+print("Fourth derivative for f1: {}".format(f.coefficients[0, 4]))
+print("Fifth derivative for f1: {}".format(f.coefficients[0, 5]))
+'''
+Value for f1: 96.0
+First derivative for f1: 240.0
+Second derivative for f1: 480.0
+Third derivative for f1: 720.0
+Fourth derivative for f1: 720.0
+Fifth derivative for f1: 360.0
+'''
+```
+
+
 
 # Software Organization 
 
@@ -129,6 +308,8 @@ For the interactive how-to-guide on how to use Forward Mode for automatic differ
 		AutoDiff.py
 		
 		Dual.py
+		
+		Hessian.py
 			   		
 		tests/
 	
@@ -183,11 +364,13 @@ The `AutoDiff` object works for the following cases:
 
 This module contains the `Dual` class that holds a dual number. It can be used to calculate the derivative of scalar or vector functions. It is to be used to calculate and access higher order derivatives (of any order for single variable inputs and of the second order for multiple variable inputs). The module overloads Python operations such as multiplication as well as some unary operations such as negation. It contains a global function for creating vector functions using dual numbers. 
 
+### Dual
 
+This module contains the `Hessian` class that holds the Hessian for two variable functions along with the value of the function and the first derivative. It works in conjunction with the `Dual` class. 
 
 ## Test Suite
 
-The test suite lives in the `tests/` folder. Each module has its own test suite. The elementary functions test suite tests its use with both `AutoDiff` and `Dual` objects. 
+The test suite lives in the `tests/` folder. Each module except for Hessian.py has its own test suite. The elementary functions test suite tests its use with both `AutoDiff` and `Dual` objects. Hessian.py's tests live in the `Dual` test suit. 
 
 We will be using `TravisCI` to ensure that all tests pass. We will be using `CodeCov` to ensure that all code is covered by a test. 
 
@@ -365,9 +548,19 @@ The core data structures are:
   * `Real` is the real portion of the dual number. It is equivalent to the value of the function.  
   *  `Dual` is the dual portion of the dual number. This is equivalent to the derivative of the function.
 
+### Hessian
+
+- Methods 
+  -  The `Hessian` class only contains the initialization method and an overloaded string method. Users can pass in the function built with the `Dual` objects returned by `makeHessianVars` (see below). The initialization pulls the relevant information from the nested `Dual` objects to store the value of function, the first derivative, and the Hessian.
+
+Currently the Hessian class only works for functions with two variables. We hope to extend its use for functions with any number of variables. 
+
 ## Functions
+
 - `Dual` contains a function `vectorizeDual` that takes in multiple functions built up with `Dual` objects and returns a `Dual` object of a vector function that stores the values and *nth* order derivatives for each function. 
+- `Dual` also contains a function `makeHessianVars` which takes in two `Dual` objects and returns two `Dual` ready to use for the `Hessian` class for the second order derivative. 
 
 ## Elementary Functions
 
 The elementary functions for use with the `Dual` objects are the same as those for use with the `AutoDiff` objects. They use duck typing to determine what type of object to return. 
+
