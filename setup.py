@@ -22,7 +22,7 @@ setuptools.setup(
 	install_requires=[
 		'numpy>=1.16.4',
 		'pytest>=5.2.1',
-		'jupypter>=4.5.0'
+		'jupyter>=4.5.0'
 	],
 	tests_require=[
 		'pytest>=5.2.1'
