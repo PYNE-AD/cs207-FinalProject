@@ -36,6 +36,4 @@
 
    - Type  `pip install -i https://test.pypi.org/simple/ ADPYNE-207`
 
-   - Type `pip install numpy`
-
    - Type `pip install pytest`
