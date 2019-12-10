@@ -111,13 +111,21 @@ def tan(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.tan(x.Real), x.Dual / (np.cos(x.Real))**2)
+			if x.Real%(np.pi/2)==0 and x.Real%np.pi!=0:
+				ans = Dual(np.nan,np.nan)
+				warnings.warn('Undefined at value', RuntimeWarning)
+				return ans
+			else:
+				return Dual(np.tan(x.Real), x.Dual / (np.cos(x.Real))**2)
 		except AttributeError:
 			try:
-				# Not working
-				x.Dual
-				# return Dual(tan(x.Real), x.Dual / (cos(x.Real))**2)
-				return sin(x)/cos(x)
+				if x.Real%(np.pi/2)==0 and x.Real%np.pi!=0:
+					ans = Dual(np.nan,np.nan)
+					warnings.warn('Undefined at value', RuntimeWarning)
+					return ans
+				else:
+					# return Dual(tan(x.Real), x.Dual / (cos(x.Real))**2)
+					return sin(x)/cos(x)
 			except AttributeError:
 				if x%(np.pi/2)==0 and x%np.pi!=0:
 					warnings.warn('Undefined at value', RuntimeWarning)
@@ -486,7 +494,14 @@ def arctanh(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.arctanh(x.Real), x.Dual/(1-x.Real**2))		
+			if(np.abs(x.Real)==1):
+				real = np.inf
+				dual = np.inf
+				warnings.warn('Undefined at value', RuntimeWarning)
+			else:
+				real = np.arctanh(x.Real)
+				dual = x.Dual/(1-x.Real**2)
+			return Dual(real, dual)	
 		except AttributeError:
 			try:
 				return Dual(arctanh(x.Real), x.Dual/(1-x.Real**2))
@@ -572,7 +587,13 @@ def log(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.log(x.Real), x.Dual/x.Real)		
+			if(x.Real==0):
+				real = -np.inf
+				dual = np.inf
+			else:
+				real = np.log(x.Real)
+				dual = x.Dual/x.Real
+			return Dual(real, dual)		
 		except AttributeError:
 			try:
 				return Dual(log(x.Real), x.Dual/x.Real)
@@ -613,7 +634,9 @@ def log10(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
-			return Dual(np.log(x.Real)/np.log(10), x.Dual/(x.Real*np.log(10)))		
+			real = np.log10(x.Real)
+			dual = x.Dual/(x.Real*np.log(10))
+			return Dual(real, dual)		
 		except AttributeError:
 			try:
 				return Dual(log(x.Real)/np.log(10), x.Dual/(x.Real*(np.log(10))))
@@ -653,9 +676,19 @@ def sqrt(x):
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 			try:
-				Real = np.sqrt(x.Real)
-				Dual = 0.5 * x.Real ** (-0.5) * x.Dual
-				return Dual(Real, Dual)
+				if x.Real < 0.0:
+					warnings.warn('Undefined at value', RuntimeWarning)
+					dual=np.nan
+				
+				elif(x.Real==0):
+					warnings.warn('Undefined at value', RuntimeWarning)
+					dual = np.inf
+				
+				else:
+					dual = 0.5 * x.Real ** (-0.5) * x.Dual
+				
+				real = np.sqrt(x.Real)
+				return Dual(real, dual)
 			except AttributeError:
 				if x < 0.0:
 					warnings.warn('Undefined at value', RuntimeWarning)

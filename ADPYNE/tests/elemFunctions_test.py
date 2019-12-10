@@ -7,7 +7,6 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 from ADPYNE.AutoDiff import AutoDiff
 import ADPYNE.elemFunctions as ef
-from ADPYNE.Dual import Dual
 
 # ------------SINE----------------#
 
