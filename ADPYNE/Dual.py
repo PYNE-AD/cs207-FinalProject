@@ -153,4 +153,4 @@ def vectorizeDual(functions, order):
 def makeHessianVars(x,y):
 	xh = x.makeHighestOrder(3)
 	yh = y.makeHighestOrder(3)
-	return xh, yh 
+	return xh, yh
