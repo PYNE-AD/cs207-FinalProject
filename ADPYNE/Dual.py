@@ -68,6 +68,7 @@ class Dual():
 		except AttributeError:
 			return Dual(other - self.Real, -1 * self.Dual)
 
+
 	def __mul__(self, other):
 		try:
 			return Dual(self.Real * other.Real, self.Dual * other.Real + self.Real * other.Dual)
@@ -113,8 +114,8 @@ class Dual():
 			return -1.0 * self 
 
 	def __abs__(self):
-		# to do
-		return self ** (1/2)
+		return Dual(-1 * self.Real, -1 * self.Dual)
+
 
 	# Comparison
 	def __eq__(self, other):
@@ -134,4 +135,3 @@ class Dual():
 				return True
 		except AttributeError:
 			return True
-

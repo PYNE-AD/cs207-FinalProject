@@ -68,10 +68,10 @@ class AutoDiff():
 			return self._convertNonArray(der_value, k)
 
 	def __str__(self):
-		return "Value: {}, Derivative: {}, Jacobian: {}".format(self.val, self.der, self.jacobian)
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
 
 	def __repr__(self):
-		return "Value: {}, Derivative: {}, Jacobian: {}".format(self.val, self.der, self.jacobian)
+		return "Value:\n{}\nDerivative:\n{}\nJacobian:\n{}\n".format(self.val, self.der, self.jacobian)
 
 	def __add__(self, other):
 		try:
@@ -129,9 +129,10 @@ class AutoDiff():
 	def __rtruediv__(self, other):
 		try:
 			# Use quotient rule
-			return AutoDiff(other.val / self.val, (other.der * self.val - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
+			# other/self
+			return AutoDiff(other.val / self.val, (self.val * other.der - other.val * self.der)/(self.val**2), self.n, 0, (other.jacobian * self.val - other.val * self.jacobian)/(self.val**2) )
 		except AttributeError:
-			return AutoDiff(other / self.val, other / self.der, self.n, 0, other / self.jacobian)
+			return AutoDiff(other / self.val, (self.val * 0 - other * self.der)/(self.val**2), self.n, 0, (self.val * 0 - other * self.jacobian)/(self.val**2))
 
 	def __pow__(self, other):
 		# Convert to float so that negative integers will work
@@ -154,28 +155,19 @@ class AutoDiff():
 
 	# Unary subtration: negation
 	def __neg__(self):
-			# If  AutoDiff of same variable, values and derivatives should both just add
+		# If  AutoDiff of same variable, values and derivatives should both just add
 		return AutoDiff(self.val * -1, self.der * -1, self.n, 0, self.jacobian * -1)
-		# except AttributeError:
-		# 	# If constant, just do regular negation
-		# 	return self * -1
 
 	def __abs__(self):
-		# try 
 		return AutoDiff(abs(self.val), ((self.val * self.der) / abs(self.val)),
 				self.n, 0, ((self.val * self.jacobian) / abs(self.val)))
-		# except AttributeError:
-		# 	return abs(self)
 
 	def __invert__(self):
-		# try
-			return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
-		# except AttributeError:
-		# 	return ~self
+		return AutoDiff(~self.val, self.der * -1, self.n, 0, self.jacobian * -1)
 
 	def __eq__(self, other):
 		try:
-			if self.val == other.val and self.der == other.der:
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
 				return True
 			else:
 				return False
@@ -184,7 +176,7 @@ class AutoDiff():
 
 	def __ne__(self, other):
 		try:
-			if self.val == other.val and self.der == other.der:
+			if np.all(np.equal(self.val,other.val)) and np.all(np.equal(self.der,other.der)):
 				return False
 			else:
 				return True

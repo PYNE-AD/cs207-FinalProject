@@ -5,28 +5,30 @@ from ADPYNE.Dual import Dual
 
 #-------------------BASE TRIG FUNCTIONS-------------------#
 # Sine function
+
+
 def sin(x):
 	''' Compute the sine of an AutoDiff object and its derivative.
 		Compute the sine of Dual Number
 
-	INPUTS
-	======
-	x: an AutoDiff object
+    INPUTS
+    ======
+    x: an AutoDiff object
 
-	RETURNS
-	=======
-	A new AutoDiff object with calculated value and derivative.
+    RETURNS
+    =======
+    A new AutoDiff object with calculated value and derivative.
 
-	EXAMPLES
-	========
-	>>> x = AutoDiff(0.5, 2.0, 1.0)
-	>>> myAutoDiff = sin(x)
-	>>> myAutoDiff.val
-	0.479425538604
-	>>> myAutoDiff.der
-	1.75516512378
-	>>> myAutoDiff.jacobian
-	0.87758256189
+    EXAMPLES
+    ========
+    >>> x = AutoDiff(0.5, 2.0, 1.0)
+    >>> myAutoDiff = sin(x)
+    >>> myAutoDiff.val
+    0.479425538604
+    >>> myAutoDiff.der
+    1.75516512378
+    >>> myAutoDiff.jacobian
+    0.87758256189
 
 	'''
 	try:
@@ -44,27 +46,29 @@ def sin(x):
 				return np.sin(x)
 
 # Cosine function
+
+
 def cos(x):
-	''' Compute the cosine of an AutoDiff object and its derivative.
+    ''' Compute the cosine of an AutoDiff object and its derivative.
 
-	INPUTS
-	======
-	x: an AutoDiff object
+    INPUTS
+    ======
+    x: an AutoDiff object
 
-	RETURNS
-	=======
-	A new AutoDiff object with calculated value and derivative.
+    RETURNS
+    =======
+    A new AutoDiff object with calculated value and derivative.
 
-	EXAMPLES
-	========
-	>>> x = AutoDiff(0.5, 2.0, 1.0)
-	>>> myAutoDiff = cos(x)
-	>>> myAutoDiff.val
-	0.87758256189
-	>>> myAutoDiff.der
-	-0.958851077208
-	>>> myAutoDiff.jacobian
-	-0.479425538604
+    EXAMPLES
+    ========
+    >>> x = AutoDiff(0.5, 2.0, 1.0)
+    >>> myAutoDiff = cos(x)
+    >>> myAutoDiff.val
+    0.87758256189
+    >>> myAutoDiff.der
+    -0.958851077208
+    >>> myAutoDiff.jacobian
+    -0.479425538604
 
 	'''
 	try:
@@ -82,27 +86,14 @@ def cos(x):
 				return np.cos(x)
 
 # Tangent function
+
+
 def tan(x):
-	''' Compute the tangent of an AutoDiff object and its derivative.
+    ''' Compute the tangent of an AutoDiff object and its derivative.
 
-	INPUTS
-	======
-	x: an AutoDiff object
-
-	RETURNS
-	=======
-	A new AutoDiff object with calculated value and derivative.
-
-	EXAMPLES
-	========
-	>>> x = AutoDiff(0.5, 2.0, 1.0)
-	>>> myAutoDiff = tan(x)
-	>>> myAutoDiff.val
-	0.546302489844
-	>>> myAutoDiff.der
-	2.59689282082
-	>>> myAutoDiff.jacobian
-	1.29844641041
+    INPUTS
+    ======
+    x: an AutoDiff object
 
 	'''
 	try:
@@ -179,6 +170,8 @@ def arcsin(X):
 				return return_val
 
 # arc cosine
+
+
 def arccos(X):
 	''' Compute the arccos of an AutoDiff object and its derivative.
 
@@ -201,7 +194,6 @@ def arccos(X):
 		>>> arccosAutoDiff.jacobian
 		-1.1547005383792517
 		'''
-
 	try:
 		# Is another ADT
 		new_val = np.arccos(X.val) #if (-1 <= X.val and X.val <= 1) else np.nan
@@ -249,7 +241,6 @@ def arctan(X):
 		new_val = np.arctan(X.val)
 		new_der = (1/(1+X.val**2))*X.der
 		new_jacobian = (1/(1+X.val**2))*X.jacobian
-
 		return AutoDiff(new_val, new_der, X.n, 0, new_jacobian)
 	except AttributeError:
 		try:
@@ -300,6 +291,8 @@ def sinh(X):
 				return return_val
 
 # hyperbolic cos
+
+
 def cosh(X):
 	''' Compute the cosh of an AutoDiff object and its derivative.
 	INPUTS
@@ -336,6 +329,8 @@ def cosh(X):
 				return return_val
 
 # hyperbolic tan
+
+
 def tanh(X):
 	''' Compute the tanh of an AutoDiff object and its derivative.
 	INPUTS
@@ -373,6 +368,8 @@ def tanh(X):
 
 #-------------------ARC HYPERBOLIC TRIG FUNCTIONS-------------------#
 # hyperbolic arcsin
+
+
 def arcsinh(x):
 	''' Compute the hyperbolic arc sine of an AutoDiff object and its derivative.
 	
@@ -413,6 +410,8 @@ def arcsinh(x):
 				return return_val
 
 # hyperbolic arc cosine
+
+
 def arccosh(x):
 	''' Compute the hyperbolic arc cosine of an AutoDiff object and its derivative.
 	
@@ -454,6 +453,8 @@ def arccosh(x):
 				return return_val
 
 # hyperbolic arc tangent
+
+
 def arctanh(x):
 	''' Compute the hyperbolic arc tangent of an AutoDiff object and its derivative.
 	
@@ -493,8 +494,11 @@ def arctanh(x):
 				return_val = np.arctanh(x)
 				return return_val
 
+
 #--------------------------EXPONENT FAMILY----------------------------#
-#Exponential
+# Exponential
+
+
 def exp(x):
 	''' Compute the exponential of an AutoDiff object and its derivative.
 	
@@ -534,6 +538,8 @@ def exp(x):
 				return return_val
 
 # natural log
+
+
 def log(x):
 	''' Compute the natural log of an AutoDiff object and its derivative.
 	
@@ -616,31 +622,75 @@ def log10(x):
 				return return_val
 
 # Square Root
-def sqrt(x):
-	''' Compute the square root an AutoDiff object and its derivative.
 
+
+def sqrt(x):
+    ''' Compute the square root an AutoDiff object and its derivative.
+
+    INPUTS
+    ======
+    x: an AutoDiff object
+
+    RETURNS
+    =======
+    A new AutoDiff object with calculated value and derivative.
+
+    EXAMPLES
+    ========
+    >>> x = AutoDiff(np.array([[5]]).T, np.array([[1]]), 1, 1)
+    >>> myAutoDiff = sqrt(x)
+    >>> myAutoDiff.val
+    2.2360679775
+    >>> myAutoDiff.der
+    0.2236068
+
+    '''
+    try:
+        new_val = np.sqrt(x.val)
+        new_der = 0.5 * x.val ** (-0.5) * x.der
+        new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
+        return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
+    except AttributeError:
+            try:
+                Real = np.sqrt(x.Real)
+                Dual = 0.5 * x.Real ** (-0.5) * x.Dual
+                return Dual(Real, Dual)
+            except AttributeError:
+                if x < 0.0:
+                    warnings.warn('Undefined at value', RuntimeWarning)
+                    return np.nan
+                else:
+                    return np.sqrt(x)
+
+# log base
+def logbase(x,base):
+	''' Compute any log base of an AutoDiff object and its derivative.
+	
 	INPUTS
 	======
 	x: an AutoDiff object
-
+	
 	RETURNS
 	=======
 	A new AutoDiff object with calculated value and derivative.
-
+	
 	EXAMPLES
 	========
-	>>> x = AutoDiff(np.array([[5]]).T, np.array([[1]]), 1, 1)
-	>>> myAutoDiff = sqrt(x)
+	x = AutoDiff(2, 2)
+	>>> myAutoDiff = logbase(x,7)
 	>>> myAutoDiff.val
-	2.2360679775
+	0.35620719
 	>>> myAutoDiff.der
-	0.2236068
-
+	0.51389834
+	>>> myAutoDiff.jacobian
+	0.25694917
+	
 	'''
 	try:
-		new_val = np.sqrt(x.val)
-		new_der = 0.5 * x.val ** (-0.5) * x.der
-		new_jacobian = 0.5 * x.val ** (-0.5) * x.jacobian
+		new_val = np.log(x.val)/np.log(base)
+		# Derivative not defined when x = 0
+		new_der = (1/(x.val*np.log(base)))*x.der
+		new_jacobian = (1/(x.val*np.log(base)))*x.jacobian
 		return AutoDiff(new_val, new_der, x.n, 0, new_jacobian)
 	except AttributeError:
 		try:
